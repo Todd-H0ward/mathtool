@@ -6,14 +6,29 @@ MAX_VALUE = 10000
 
 # ------ HELPERS --------
 
-def inputWithValidation(message):
+def parseWithValidation(text):
     try:
-        num = int(input(message))
+        num = int(text)
     except:
         print("ОШИБКА: коэффициент не является целым числом", file=sys.stderr)
         sys.exit(1)
 
+    if abs(num) > MAX_VALUE:
+        print("ОШИБКА: значение вне допустимого диапазона", file=sys.stderr)
+        sys.exit(1)
+
     return num
+
+
+def inputWithValidation(message):
+    return parseWithValidation(input(message))
+
+
+def formatRoot(x):
+    if x == 0:
+        x = 0.0
+
+    return f"{x:.3f}"
 
 
 def solve(a, b, c):
@@ -21,7 +36,7 @@ def solve(a, b, c):
         if b != 0:
             print("Уравнение линейное")
             x = -c / b
-            print(f"x = {x:.3f}")
+            print(f"x = {formatRoot(x)}")
         else:
             print("ОШИБКА: это не уравнение, неизвестное отсутствует", file=sys.stderr)
             sys.exit(1)
@@ -37,14 +52,14 @@ def solve(a, b, c):
         print("Действительных корней нет")
     elif d == 0:
         x = -b / (2 * a)
-        print(f"x = {x:.3f}")
+        print(f"x = {formatRoot(x)}")
     else:
         sqrtD = d ** 0.5
         x1 = (-b - sqrtD) / (2 * a)
         x2 = (-b + sqrtD) / (2 * a)
         
-        print(f"x1 = {x1:.3f}")
-        print(f"x2 = {x2:.3f}")
+        print(f"x1 = {formatRoot(x1)}")
+        print(f"x2 = {formatRoot(x2)}")
 
 # -------- MAIN ---------
 
@@ -70,19 +85,14 @@ if len(sys.argv) - 1 == 1:
     b = inputWithValidation("Введите B: ")
     c = inputWithValidation("Введите C: ")
 
-    if abs(a) > MAX_VALUE or abs(b) > MAX_VALUE or abs(c) > MAX_VALUE:
-        print("ОШИБКА: значение вне допустимого диапазона", file=sys.stderr)
-        sys.exit(1)
-
-
 elif len(sys.argv) - 1 == 7:
     if sys.argv[2] != "-a" or sys.argv[4] != "-b" or sys.argv[6] != "-c":
         print("ОШИБКА: неизвестный параметр", file=sys.stderr)
         sys.exit(1)
 
-    a = sys.argv[3]
-    b = sys.argv[5]
-    c = sys.argv[7]
+    a = parseWithValidation(sys.argv[3])
+    b = parseWithValidation(sys.argv[5])
+    c = parseWithValidation(sys.argv[7])
 else:
     print("ОШИБКА: неизвестный набор параметров", file=sys.stderr)
     sys.exit(1)
