@@ -13,17 +13,34 @@ def inputWithValidation(message):
 
 
 def solve(a, b, c):
-    if a != 0:
+    if a == 0:
+        if b != 0:
+            print("Уравнение линейное")
+            x = -c / b
+            print(f"x = {x:.3f}")
+        else:
+            print("ОШИБКА: это не уравнение, неизвестное отсутствует", file=sys.stderr)
+            sys.exit(1)
         return
 
-    if b != 0:
-        print("Уравнение линейное")
-        x = -c / b
-        print("x = {:.3f}".format(x))
+    print("Уравнение квадратное")
+
+    d = b ** 2 - 4 * a * c
+
+    print(f"D = {d}")
+
+    if d < 0:
+        print("Действительных корней нет")
+    elif d == 0:
+        x = -b / (2 * a)
+        print(f"x = {x:.3f}")
     else:
-        print("ОШИБКА: это не уравнение, неизвестное отсутствует", file=sys.stderr)
-        sys.exit(1)
-    return
+        sqrtD = d ** 0.5
+        x1 = (-b - sqrtD) / (2 * a)
+        x2 = (-b + sqrtD) / (2 * a)
+        
+        print(f"x1 = {x1:.3f}")
+        print(f"x2 = {x2:.3f}")
 
 # -------- MAIN ---------
 
