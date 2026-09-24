@@ -128,25 +128,11 @@ def handle_integrate(args):
     return 0
 
 HANDLERS = {
-    "solve":     handle_solve,
-    "stats":     handle_stats,
-    "series":    handle_series,
+    "solve": handle_solve,
+    "stats": handle_stats,
+    "series": handle_series,
     "integrate": handle_integrate,
 }
-
-HELP_TEXT = """\
-Математический инструмент
-
-Использование:
-  mathtools.py --help                        вывести эту справку
-  mathtools.py solve                         запросить коэффициенты у пользователя
-  mathtools.py solve -a A -b B -c C         взять коэффициенты из параметров
-  mathtools.py stats [--input FILE]          статистика по числам (ввод или файл)
-  mathtools.py series                        сумма ряда
-  mathtools.py integrate                     численное интегрирование
-
-Коэффициенты — целые числа |x| <= 10000.
-Для stats: не более 20 вещественных чисел, |x| <= 10000, без NaN и бесконечностей."""
 
 
 def main(argv=None):
@@ -154,7 +140,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     if args.command is None:
-        print(HELP_TEXT)
+        parser.print_help()
         return 0
 
     handler = HANDLERS[args.command]
