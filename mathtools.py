@@ -13,46 +13,39 @@ MAX_COUNT = 20
 
 def parse_int(text):
     try:
-        num = int(text)
+        return int(text)
     except (ValueError, TypeError):
         raise ValueError("коэффициент не является целым числом")
-    if abs(num) > MAX_VALUE:
-        raise ValueError("значение вне допустимого диапазона")
-    return num
+
+
+def check_coefficients(coefficients):
+    for name, value in coefficients.items():
+        if abs(value) > MAX_VALUE:
+            raise ValueError(f"коэффициент {name} вне допустимого диапазона")
 
 
 def parse_float(text):
     try:
         num = float(text)
     except (ValueError, TypeError):
-        raise ValueError("коэффициент не является числом")
+        raise ValueError(f"{text!r} не является числом")
     if not isfinite(num) or abs(num) > MAX_VALUE:
-        raise ValueError("значение вне допустимого диапазона")
+        raise ValueError(f"{text!r} не является допустимым числом")
     return num
 
 
-def validate_count(count):
-    if count < 0 or count > MAX_COUNT:
-        raise ValueError("количество чисел вне допустимого диапазона")
+def read_numbers(source):
+    numbers = []
+    for line in source:
+        for word in line.split():
+            numbers.append(parse_float(word))
 
-
-def _read_numbers_stdin():
-    count = parse_int(input("Введите количество: "))
-    validate_count(count)
-    numbers = [parse_float(input()) for _ in range(count)]
+    if len(numbers) == 0:
+        raise ValueError("список чисел пуст")
+    if len(numbers) > MAX_COUNT:
+        raise ValueError(f"чисел больше {MAX_COUNT}")
     return numbers
 
-
-def _read_numbers_file(path):
-    try:
-        with open(path) as f:
-            text = f.read()
-    except OSError:
-        raise ValueError(f"не удалось прочитать файл: {path}")
-    numbers = [parse_float(token) for token in text.split()]
-    validate_count(len(numbers))
-
-    return numbers
 
 def format_root(x):
     if x == 0:
@@ -65,10 +58,12 @@ def handle_solve(args):
         a = parse_int(input("Введите A: "))
         b = parse_int(input("Введите B: "))
         c = parse_int(input("Введите C: "))
+        check_coefficients({"A": a, "B": b, "C": c})
     elif args.a is not None and args.b is not None and args.c is not None:
         a = parse_int(args.a)
         b = parse_int(args.b)
         c = parse_int(args.c)
+        check_coefficients({"A": a, "B": b, "C": c})
     else:
         raise ValueError("укажите все три коэффициента (-a, -b, -c) или ни одного")
 
@@ -94,9 +89,10 @@ def handle_solve(args):
 
 def handle_stats(args):
     if args.input is None:
-        numbers = _read_numbers_stdin()
+        numbers = read_numbers(sys.stdin)
     else:
-        numbers = _read_numbers_file(args.input)
+        with open(args.input, encoding="utf-8-sig") as f:
+            numbers = read_numbers(f)
 
     s = stats.calc_stats(numbers)
 
@@ -146,10 +142,10 @@ def main(argv=None):
     handler = HANDLERS[args.command]
     try:
         return handler(args)
-    except ValueError as exc:
+    except (ValueError, OSError) as exc:
         print(f"ОШИБКА: {exc}", file=sys.stderr)
         return 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
