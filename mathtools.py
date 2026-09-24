@@ -106,7 +106,7 @@ def handle_stats(args):
     print(f"Ср. кв.: {s['rms']:.3f}")
     print(f"Дисперсия: {s['variance']:.3f}")
     print(f"СКО: {s['sko']:.3f}")
-    print(f"Станд. откл.: {s['sample_std']:.3f}")
+    print(f"Станд. откл.: {s['sample_std']:.3f}" if s['sample_std'] is not None else "Станд. откл.: НЕ СУЩЕСТВУЕТ")
     print(f"Наименьшее: {s['minimum']:.3f}")
     print(f"Наибольшее: {s['maximum']:.3f}")
     print(f"Положительных: {s['positives']}")
