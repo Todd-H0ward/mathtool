@@ -36,9 +36,14 @@ def parse_float(text):
 
 def read_numbers(source):
     numbers = []
-    for line in source:
-        for word in line.split():
+
+    if type(source) == str:
+        for word in source.split(" "):
             numbers.append(parse_float(word))
+    else:
+        for line in source:
+            for word in line.split(" "):
+                numbers.append(parse_float(word))
 
     if len(numbers) == 0:
         raise ValueError("ОШИБКА: список чисел пуст")
@@ -117,7 +122,17 @@ def handle_stats(args):
 
 
 def handle_series(args):
-    print(series.calc_series())
+    series.validate(args.terms, args.eps)
+    term, formula = series.FORMULAS[args.func]
+    if args.terms is not None:
+        result = series.sum_by_count(term, args.terms)
+        count = args.terms
+    else:
+        result, count = series.sum_by_eps(term, args.eps)
+
+    print(formula)
+    print(f"Сумма: {result:.{series.DIGITS}f}")
+    print(f"Количество слагаемых: {count}")
     return 0
 
 

@@ -1,5 +1,7 @@
 import argparse
 
+from calc.series import FORMULAS, MAX_EPS, MAX_TERMS
+
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="mathtools.py",
@@ -29,12 +31,17 @@ def build_parser():
     )
     p_stats.add_argument("--input", metavar="FILE", default=None, help="прочитать числа из файла (по умолчанию — с клавиатуры)")
 
-    sub.add_parser(
+    p_series = sub.add_parser(
         "series",
         help="вычислить сумму ряда",
         description="Вычисляет сумму математического ряда.",
         allow_abbrev=False
     )
+
+    p_series.add_argument("--func", required=True, choices=sorted(FORMULAS), help="формула ряда")
+    series_mode = p_series.add_mutually_exclusive_group(required=True)
+    series_mode.add_argument("--terms", type=int, metavar="N", help=f"число слагаемых (от 1 до {MAX_TERMS})")
+    series_mode.add_argument("--eps", type=float, metavar="EPS", help=f"точность (0 < EPS <= {MAX_EPS})")
 
     sub.add_parser(
         "integrate",
@@ -48,4 +55,3 @@ def build_parser():
 
 def parse_args(argv=None):
     return build_parser().parse_args(argv)
-
