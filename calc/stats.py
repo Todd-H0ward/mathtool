@@ -52,10 +52,12 @@ def sum_sq(numbers):
 
 
 def sum_sq_dev(numbers):
-    mean = mean(numbers)
+    m = mean(numbers)
     result = 0
+
     for value in numbers:
-        result += (value - mean) ** 2
+        result += (value - m) ** 2
+
     return result
 
 
@@ -83,7 +85,7 @@ def calc_stats(numbers):
     if count == 0:
         return {"count": count}
 
-    sample_std = sample_std(numbers)
+    std = sample_std(numbers)
 
     return {
         "count": count,
@@ -93,7 +95,7 @@ def calc_stats(numbers):
         "rms": rms(numbers),
         "variance": variance(numbers),
         "sko": sko(numbers),
-        "sample_std": sample_std,
+        "sample_std": std,
         "minimum": minimum(numbers),
         "maximum": maximum(numbers),
         "positives": count_positive(numbers),

@@ -15,22 +15,22 @@ def parse_int(text):
     try:
         return int(text)
     except (ValueError, TypeError):
-        raise ValueError("коэффициент не является целым числом")
+        raise ValueError("ОШИБКА: коэффициент не является целым числом")
 
 
 def check_coefficients(coefficients):
     for name, value in coefficients.items():
         if abs(value) > MAX_VALUE:
-            raise ValueError(f"коэффициент {name} вне допустимого диапазона")
+            raise ValueError(f"ОШИБКА: коэффициент {name} вне допустимого диапазона")
 
 
 def parse_float(text):
     try:
         num = float(text)
     except (ValueError, TypeError):
-        raise ValueError(f"{text!r} не является числом")
+        raise ValueError(f"ОШИБКА: {text!r} не является числом")
     if not isfinite(num) or abs(num) > MAX_VALUE:
-        raise ValueError(f"{text!r} не является допустимым числом")
+        raise ValueError(f"ОШИБКА: {text!r} не является допустимым числом")
     return num
 
 
@@ -41,9 +41,9 @@ def read_numbers(source):
             numbers.append(parse_float(word))
 
     if len(numbers) == 0:
-        raise ValueError("список чисел пуст")
+        raise ValueError("ОШИБКА: список чисел пуст")
     if len(numbers) > MAX_COUNT:
-        raise ValueError(f"чисел больше {MAX_COUNT}")
+        raise ValueError(f"ОШИБКА: чисел больше {MAX_COUNT}")
     return numbers
 
 
@@ -86,10 +86,10 @@ def handle_solve(args):
 
     return 0
 
-
 def handle_stats(args):
     if args.input is None:
-        numbers = read_numbers(sys.stdin)
+        nums_input = input("Введите числа: ");
+        numbers = read_numbers(nums_input)
     else:
         with open(args.input, encoding="utf-8-sig") as f:
             numbers = read_numbers(f)
@@ -97,6 +97,7 @@ def handle_stats(args):
     s = stats.calc_stats(numbers)
 
     print(f"Количество: {s['count']}")
+
     if s['count'] == 0:
         return 0
 
@@ -111,6 +112,7 @@ def handle_stats(args):
     print(f"Наибольшее: {s['maximum']:.3f}")
     print(f"Положительных: {s['positives']}")
     print(f"Отрицательных: {s['negatives']}")
+
     return 0
 
 
@@ -140,6 +142,7 @@ def main(argv=None):
         return 0
 
     handler = HANDLERS[args.command]
+
     try:
         return handler(args)
     except (ValueError, OSError) as exc:

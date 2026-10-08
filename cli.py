@@ -1,6 +1,5 @@
 import argparse
 
-
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="mathtools.py",

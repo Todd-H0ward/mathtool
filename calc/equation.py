@@ -1,6 +1,6 @@
 # ------ HELPERS --------
 
-def _format_root(x):
+def format_root(x):
     if x == 0:
         x = 0.0
     return f"{x:.3f}"
@@ -10,7 +10,7 @@ def _format_root(x):
 
 def validate(a, b, c):
     if a == 0 and b == 0:
-        raise ValueError("это не уравнение, неизвестное отсутствует")
+        raise ValueError("ОШИБКА: это не уравнение, неизвестное отсутствует")
 
 
 # ------- SOLVE ---------
