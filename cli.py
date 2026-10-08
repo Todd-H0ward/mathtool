@@ -2,8 +2,13 @@ import argparse
 
 from calc.series import FORMULAS, MAX_EPS, MAX_TERMS
 from calc.integration import FORMULAS as INTEGRATION_FORMULAS, MAX_STEPS
+from calc.equation import MAX_COEFFICIENT
+from calc.stats import MAX_COUNT, MAX_VALUE
+
+# ------ PARSER --------
 
 def build_parser():
+    """Вернуть парсер команд solve, stats, series и integrate с их параметрами."""
     parser = argparse.ArgumentParser(
         prog="mathtools.py",
         description="Математический инструмент: уравнение, статистика, ряд, интеграл.",
@@ -11,26 +16,32 @@ def build_parser():
     )
     sub = parser.add_subparsers(dest="command")
 
+    # ------ SOLVE --------
+
     p_solve = sub.add_parser(
         "solve",
         help="решить уравнение A·x²+B·x+C=0",
         description="Решение квадратного или линейного уравнения A·x²+B·x+C=0. "
-                    "Коэффициенты — целые числа |x| <= 10000.",
+                    f"Коэффициенты — целые числа |x| <= {MAX_COEFFICIENT}.",
         allow_abbrev=False
     )
 
-    p_solve.add_argument("-a", type=str, default=None, metavar="A", help="коэффициент A (целое, |A| <= 10000)")
-    p_solve.add_argument("-b", type=str, default=None, metavar="B", help="коэффициент B (целое, |B| <= 10000)")
-    p_solve.add_argument("-c", type=str, default=None, metavar="C", help="коэффициент C (целое, |C| <= 10000)")
+    p_solve.add_argument("-a", type=str, default=None, metavar="A", help=f"коэффициент A (целое, |A| <= {MAX_COEFFICIENT})")
+    p_solve.add_argument("-b", type=str, default=None, metavar="B", help=f"коэффициент B (целое, |B| <= {MAX_COEFFICIENT})")
+    p_solve.add_argument("-c", type=str, default=None, metavar="C", help=f"коэффициент C (целое, |C| <= {MAX_COEFFICIENT})")
+
+    # ------ STATS --------
 
     p_stats = sub.add_parser(
         "stats",
         help="статистика по последовательности чисел",
         description="Вычисляет статистические показатели последовательности "
-                    "вещественных чисел (не более 20, |x| <= 10000).",
+                    f"вещественных чисел (не более {MAX_COUNT}, |x| <= {MAX_VALUE}).",
         allow_abbrev=False
     )
     p_stats.add_argument("--input", metavar="FILE", default=None, help="прочитать числа из файла (по умолчанию — с клавиатуры)")
+
+    # ------ SERIES --------
 
     p_series = sub.add_parser(
         "series",
@@ -43,6 +54,8 @@ def build_parser():
     series_mode = p_series.add_mutually_exclusive_group(required=True)
     series_mode.add_argument("--terms", type=int, metavar="N", help=f"число слагаемых (от 1 до {MAX_TERMS})")
     series_mode.add_argument("--eps", type=float, metavar="EPS", help=f"точность (0 < EPS <= {MAX_EPS})")
+
+    # ------ INTEGRATE --------
 
     p_integrate = sub.add_parser(
         "integrate",
@@ -58,5 +71,8 @@ def build_parser():
     return parser
 
 
+# ------ ARGUMENTS --------
+
 def parse_args(argv=None):
+    """Разобрать список argv (или sys.argv) и вернуть пространство параметров."""
     return build_parser().parse_args(argv)

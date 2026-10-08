@@ -4,37 +4,29 @@ from math import isfinite
 from cli import build_parser
 from calc import equation, stats, series, integration
 
-# ------ CONSTANTS ------
-
-MAX_VALUE = 10000
-MAX_COUNT = 20
-
 # ------ HELPERS ------
 
 def parse_int(text):
+    """Преобразовать text в целый коэффициент или вызвать ValueError."""
     try:
         return int(text)
     except (ValueError, TypeError):
         raise ValueError("ОШИБКА: коэффициент не является целым числом")
 
 
-def check_coefficients(coefficients):
-    for name, value in coefficients.items():
-        if abs(value) > MAX_VALUE:
-            raise ValueError(f"ОШИБКА: коэффициент {name} вне допустимого диапазона")
-
-
 def parse_float(text):
+    """Преобразовать text в конечное число в допустимом для stats диапазоне."""
     try:
         num = float(text)
     except (ValueError, TypeError):
         raise ValueError(f"ОШИБКА: {text!r} не является числом")
-    if not isfinite(num) or abs(num) > MAX_VALUE:
+    if not isfinite(num) or abs(num) > stats.MAX_VALUE:
         raise ValueError(f"ОШИБКА: {text!r} не является допустимым числом")
     return num
 
 
 def read_numbers(source):
+    """Вернуть проверенный список чисел из строки source или потока строк."""
     numbers = []
 
     if type(source) == str:
@@ -47,28 +39,30 @@ def read_numbers(source):
 
     if len(numbers) == 0:
         raise ValueError("ОШИБКА: список чисел пуст")
-    if len(numbers) > MAX_COUNT:
-        raise ValueError(f"ОШИБКА: чисел больше {MAX_COUNT}")
+    if len(numbers) > stats.MAX_COUNT:
+        raise ValueError(f"ОШИБКА: чисел больше {stats.MAX_COUNT}")
     return numbers
 
 
 def format_root(x):
+    """Вернуть строку корня x с тремя знаками, исключая отрицательный ноль."""
     if x == 0:
         x = 0.0
     return f"{x:.3f}"
 
 
+# ------ COMMAND HANDLERS --------
+
 def handle_solve(args):
+    """Прочитать коэффициенты из args или stdin, вывести корни и вернуть код 0."""
     if args.a is None and args.b is None and args.c is None:
         a = parse_int(input("Введите A: "))
         b = parse_int(input("Введите B: "))
         c = parse_int(input("Введите C: "))
-        check_coefficients({"A": a, "B": b, "C": c})
     elif args.a is not None and args.b is not None and args.c is not None:
         a = parse_int(args.a)
         b = parse_int(args.b)
         c = parse_int(args.c)
-        check_coefficients({"A": a, "B": b, "C": c})
     else:
         raise ValueError("укажите все три коэффициента (-a, -b, -c) или ни одного")
 
@@ -92,8 +86,9 @@ def handle_solve(args):
     return 0
 
 def handle_stats(args):
+    """Прочитать числа из args.input или stdin, вывести статистику и вернуть 0."""
     if args.input is None:
-        nums_input = input("Введите числа: ");
+        nums_input = input("Введите числа: ")
         numbers = read_numbers(nums_input)
     else:
         with open(args.input, encoding="utf-8-sig") as f:
@@ -122,6 +117,7 @@ def handle_stats(args):
 
 
 def handle_series(args):
+    """Вычислить ряд по параметрам args, вывести сумму и вернуть код 0."""
     series.validate(args.terms, args.eps)
     term, formula = series.FORMULAS[args.func]
     if args.terms is not None:
@@ -138,6 +134,7 @@ def handle_series(args):
 
 
 def handle_integrate(args):
+    """Вычислить интеграл по параметрам args, вывести результат и вернуть код 0."""
     function, formula, low, high, inclusive = integration.FORMULAS[args.func]
     integration.validate(args.a, args.b, args.steps, low, high, inclusive)
 
@@ -149,6 +146,8 @@ def handle_integrate(args):
 
     return 0
 
+# ------ COMMAND TABLE --------
+
 HANDLERS = {
     "solve": handle_solve,
     "stats": handle_stats,
@@ -157,7 +156,10 @@ HANDLERS = {
 }
 
 
+# ------ ENTRY POINT --------
+
 def main(argv=None):
+    """Разобрать argv, выполнить команду и вернуть код 0 или 1 при ошибке данных."""
     parser = build_parser()
     args = parser.parse_args(argv)
 
