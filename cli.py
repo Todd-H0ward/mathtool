@@ -1,6 +1,7 @@
 import argparse
 
 from calc.series import FORMULAS, MAX_EPS, MAX_TERMS
+from calc.integration import FORMULAS as INTEGRATION_FORMULAS, MAX_STEPS
 
 def build_parser():
     parser = argparse.ArgumentParser(
@@ -43,12 +44,16 @@ def build_parser():
     series_mode.add_argument("--terms", type=int, metavar="N", help=f"число слагаемых (от 1 до {MAX_TERMS})")
     series_mode.add_argument("--eps", type=float, metavar="EPS", help=f"точность (0 < EPS <= {MAX_EPS})")
 
-    sub.add_parser(
+    p_integrate = sub.add_parser(
         "integrate",
         help="численное интегрирование",
         description="Вычисляет определённый интеграл методом численного интегрирования.",
         allow_abbrev=False
     )
+    p_integrate.add_argument("--func", required=True, choices=sorted(INTEGRATION_FORMULAS), help="подынтегральная функция")
+    p_integrate.add_argument("--from", dest="a", required=True, type=float, metavar="A", help="нижний предел интегрирования")
+    p_integrate.add_argument("--to", dest="b", required=True, type=float, metavar="B", help="верхний предел интегрирования")
+    p_integrate.add_argument("--steps", required=True, type=int, metavar="N", help=f"число шагов (от 1 до {MAX_STEPS})")
 
     return parser
 

@@ -133,11 +133,20 @@ def handle_series(args):
     print(formula)
     print(f"Сумма: {result:.{series.DIGITS}f}")
     print(f"Количество слагаемых: {count}")
+
     return 0
 
 
 def handle_integrate(args):
-    print(integration.calc_integrate())
+    function, formula, low, high, inclusive = integration.FORMULAS[args.func]
+    integration.validate(args.a, args.b, args.steps, low, high, inclusive)
+
+    result = integration.integrate(function, args.a, args.b, args.steps)
+
+    print(formula)
+    print(f"Интеграл: {result:.{integration.DIGITS}f}")
+    print(f"Количество шагов: {args.steps}")
+
     return 0
 
 HANDLERS = {
