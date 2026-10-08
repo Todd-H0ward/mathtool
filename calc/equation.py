@@ -17,9 +17,9 @@ def validate(a, b, c):
     """Проверить диапазон коэффициентов a, b, c и наличие неизвестного."""
     for name, value in (("A", a), ("B", b), ("C", c)):
         if abs(value) > MAX_COEFFICIENT:
-            raise ValueError(f"ОШИБКА: коэффициент {name} вне допустимого диапазона")
+            raise ValueError(f"коэффициент {name} вне допустимого диапазона")
     if a == 0 and b == 0:
-        raise ValueError("ОШИБКА: это не уравнение, неизвестное отсутствует")
+        raise ValueError("это не уравнение")
 
 
 # ------- SOLVE ---------
@@ -39,7 +39,6 @@ def solve(a, b, c):
         return "квадратное", d, [x]
     else:
         sqrt_d = d ** 0.5
-        x1 = (-b - sqrt_d) / (2 * a)
-        x2 = (-b + sqrt_d) / (2 * a)
+        x1 = (-b + sqrt_d) / (2 * a)
+        x2 = (-b - sqrt_d) / (2 * a)
         return "квадратное", d, [x1, x2]
-

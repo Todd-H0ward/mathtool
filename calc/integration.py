@@ -32,9 +32,9 @@ FORMULAS = {
 def validate(a, b, steps, low, high, inclusive):
     """Проверить a < b и steps; inclusive разрешает границы low и high."""
     if not (math.isfinite(a) and math.isfinite(b)):
-        raise ValueError("ОШИБКА: пределы интегрирования должны быть конечными числами")
+        raise ValueError("пределы интегрирования должны быть конечными числами")
     if a >= b:
-        raise ValueError("ОШИБКА: нижний предел должен быть меньше верхнего")
+        raise ValueError("начальный предел не меньше конечного")
 
     for value in (a, b):
         if inclusive:
@@ -42,11 +42,10 @@ def validate(a, b, steps, low, high, inclusive):
         else:
             outside = value <= low or value >= high
         if outside:
-            interval = f"[{low}; {high}]" if inclusive else f"({low}; {high})"
-            raise ValueError(f"ОШИБКА: пределы интегрирования должны принадлежать промежутку {interval}")
+            raise ValueError("предел вне промежутка")
 
     if not 1 <= steps <= MAX_STEPS:
-        raise ValueError(f"ОШИБКА: число шагов должно быть от 1 до {MAX_STEPS}")
+        raise ValueError("количество шагов вне диапазона")
 
 # ------ INTEGRATION --------
 

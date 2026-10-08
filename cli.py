@@ -26,9 +26,9 @@ def build_parser():
         allow_abbrev=False
     )
 
-    p_solve.add_argument("-a", type=str, default=None, metavar="A", help=f"коэффициент A (целое, |A| <= {MAX_COEFFICIENT})")
-    p_solve.add_argument("-b", type=str, default=None, metavar="B", help=f"коэффициент B (целое, |B| <= {MAX_COEFFICIENT})")
-    p_solve.add_argument("-c", type=str, default=None, metavar="C", help=f"коэффициент C (целое, |C| <= {MAX_COEFFICIENT})")
+    p_solve.add_argument("-a", type=int, default=None, metavar="A", help=f"коэффициент A (целое, |A| <= {MAX_COEFFICIENT})")
+    p_solve.add_argument("-b", type=int, default=None, metavar="B", help=f"коэффициент B (целое, |B| <= {MAX_COEFFICIENT})")
+    p_solve.add_argument("-c", type=int, default=None, metavar="C", help=f"коэффициент C (целое, |C| <= {MAX_COEFFICIENT})")
 
     # ------ STATS --------
 
@@ -39,7 +39,7 @@ def build_parser():
                     f"вещественных чисел (не более {MAX_COUNT}, |x| <= {MAX_VALUE}).",
         allow_abbrev=False
     )
-    p_stats.add_argument("--input", metavar="FILE", default=None, help="прочитать числа из файла (по умолчанию — с клавиатуры)")
+    p_stats.add_argument("--input", metavar="FILE", default=None, help="прочитать числа из файла (по умолчанию — из стандартного ввода до конца потока)")
 
     # ------ SERIES --------
 

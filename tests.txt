@@ -1,91 +1,145 @@
-Тесты для приложения mathtools.py
-Решение квадратного уравнения A*x^2 + B*x + C = 0
+Тесты приложения mathtools.py — часть 3
 
-=====================================================================
-1. ТЕСТЫ КОЭФФИЦИЕНТОВ
-=====================================================================
-Запуск: python3 mathtools.py solve -a A -b B -c C
-либо:   python3 mathtools.py solve  (коэффициенты вводятся с клавиатуры)
+Команды используют фактическое имя файла mathtools.py и POSIX-конвейер printf.
+Поля stdin, stdout и stderr записаны JSON-строками: \n — перевод строки,
+\t — табуляция, "" — пустой поток. Все пробелы и завершающие переводы строк сохранены.
+В Markdown-таблице \| отображается как |, в том числе в командах с конвейером.
+Эталоны argparse записаны для Python 3.14 при COLUMNS=80.
+Тесты 33 и 34 выполняются вручную, без конвейера: stdin перечисляет ответы.
+В их stdout записаны только символы приложения, без эха клавиатуры терминалом.
+На экране ответы и нажатия Enter разделяют подсказки на отдельные строки.
+Тесты 1 и 2 повторяют один запуск, проверяя полный вывод обеих строк сводки.
 
---------------------------------------------------------------------------------
- №  |   A   |  B  |  C  | Ожидаемый результат
---------------------------------------------------------------------------------
-  1 |     1 |  -3 |   2 | Квадратное; D = 1; x1 = 1.000; x2 = 2.000; код 0
-  2 |     1 |  -2 |   1 | Квадратное; D = 0; x = 1.000; код 0
-  3 |     1 |   0 |   5 | Квадратное; D = -20; действительных корней нет; код 0
-  4 |     0 |   2 |  -4 | Линейное; x = 2.000; код 0
-  5 |     0 |   0 |   0 | Не уравнение: неизвестного нет; код 1
-  6 |     0 |   0 |   7 | Не уравнение: неизвестного нет; код 1
-  7 |   abc |   1 |   1 | Сообщение об ошибке: не целое число; код 1
-  8 | 50000 |   1 |   1 | Сообщение об ошибке: вне диапазона; код 1
---------------------------------------------------------------------------------
-  9 |    -1 |   3 |  -2 | Квадратное; D = 1; x1 = 2.000; x2 = 1.000; код 0
- 10 |     2 |   0 |  -8 | Квадратное; D = 64; x1 = -2.000; x2 = 2.000; код 0
- 11 |     1 |   0 |   0 | Квадратное; D = 0; x = 0.000; код 0
- 12 |     0 |  -3 |   0 | Линейное; x = 0.000; код 0
- 13 |     0 |   4 |   1 | Линейное; x = -0.250; код 0
- 14 | 10000 | 10000 | 10000 | Квадратное; D = -300000000; корней нет; код 0
- 15 |-10000 |   1 |   1 | Квадратное; D = 40001; x1 = 0.010; x2 = -0.010; код 0
- 16 | 10001 |   1 |   1 | Сообщение об ошибке: вне диапазона; код 1
- 17 |     1 |   1 |-10001 | Сообщение об ошибке: вне диапазона; код 1
- 18 |   1.5 |   1 |   1 | Сообщение об ошибке: не целое число; код 1
- 19 |     1 |     |   1 | Сообщение об ошибке: не целое число; код 1
---------------------------------------------------------------------------------
-
-Пояснения к отдельным тестам:
-  1  — квадратное уравнение с двумя корнями (обязательный случай);
-  2  — квадратное уравнение с одним корнем (D = 0);
-  3  — квадратное уравнение без действительных корней (D < 0);
-  4  — линейное уравнение с одним корнем;
-  5,6 — A = 0 и B = 0: неизвестное отсутствует при любом C;
-  7,18,19 — исходные данные не являются целыми числами;
-  8,16,17 — исходные данные выходят за допустимый диапазон |x| <= 10000;
-  9  — отрицательный старший коэффициент, порядок вывода корней;
-  14,15 — граничные значения диапазона.
-
-=====================================================================
-2. ТЕСТЫ КОМАНДНОЙ СТРОКИ
-=====================================================================
-Формат: команда запуска -> ожидаемый результат
-
- 20. python3 mathtools.py
-     -> справка по использованию в стандартный вывод; код возврата 0
-
- 21. python3 mathtools.py --help
-     -> справка по использованию в стандартный вывод; код возврата 0
-
- 22. python3 mathtools.py help
-     -> ОШИБКА: неизвестная команда (stderr); код возврата 1
-
- 23. python3 mathtools.py SOLVE
-     -> ОШИБКА: неизвестная команда (stderr); код возврата 1
-        (команда чувствительна к регистру)
-
- 24. python3 mathtools.py solve -a 1 -b 2
-     -> ОШИБКА: неизвестный набор параметров (stderr); код возврата 1
-        (пропущен параметр -c)
-
- 25. python3 mathtools.py solve -a 1 -b 2 -c 3 -d 4
-     -> ОШИБКА: неизвестный набор параметров (stderr); код возврата 1
-        (лишний параметр)
-
- 26. python3 mathtools.py solve -a 1 -b 2 -x 3
-     -> ОШИБКА: неизвестный параметр (stderr); код возврата 1
-
- 27. python3 mathtools.py solve -a 1 -c 3 -b 2
-     -> ОШИБКА: неизвестный параметр (stderr); код возврата 1
-        (параметры ожидаются в порядке -a -b -c)
-
- 28. python3 mathtools.py solve 1 2 3
-     -> ОШИБКА: неизвестный набор параметров (stderr); код возврата 1
-
-=====================================================================
-3. ОБЩИЕ ТРЕБОВАНИЯ
-=====================================================================
-  - при любой ошибке во входных данных код возврата ненулевой (1),
-    а сообщение об ошибке выводится в стандартный поток ошибок (stderr);
-  - при успешном решении код возврата нулевой (0),
-    а результат выводится в стандартный поток вывода (stdout);
-  - оба способа задания коэффициентов (параметры командной строки
-    и ввод с клавиатуры) должны давать одинаковый результат:
-    каждый тест 1-19 проверяется обоими способами.
+| № | Проверка | Режим | Команда | stdin | stdout | stderr | Код возврата |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 001 | Статистика: часть 1 | автоматически | `python3 mathtools.py stats --input numbers.txt` | `""` | `"Количество: 3\nСумма: 10.000\nСр. арифм.: 3.333\nСумма кв.: 42.000\nСр. кв.: 3.742\nДисперсия: 2.889\nСКО: 1.700\nСтанд. откл.: 2.082\nНаименьшее: 1.000\nНаибольшее: 5.000\nПоложительных: 3\nОтрицательных: 0\n"` | `""` | 0 |
+| 002 | Статистика: часть 2, полный вывод того же запуска | автоматически | `python3 mathtools.py stats --input numbers.txt` | `""` | `"Количество: 3\nСумма: 10.000\nСр. арифм.: 3.333\nСумма кв.: 42.000\nСр. кв.: 3.742\nДисперсия: 2.889\nСКО: 1.700\nСтанд. откл.: 2.082\nНаименьшее: 1.000\nНаибольшее: 5.000\nПоложительных: 3\nОтрицательных: 0\n"` | `""` | 0 |
+| 003 | stats | автоматически | `printf '%b' '4 1 5\n' \| python3 mathtools.py stats` | `"4 1 5\n"` | `"Количество: 3\nСумма: 10.000\nСр. арифм.: 3.333\nСумма кв.: 42.000\nСр. кв.: 3.742\nДисперсия: 2.889\nСКО: 1.700\nСтанд. откл.: 2.082\nНаименьшее: 1.000\nНаибольшее: 5.000\nПоложительных: 3\nОтрицательных: 0\n"` | `""` | 0 |
+| 004 | stats | автоматически | `printf '%b' '7\n' \| python3 mathtools.py stats` | `"7\n"` | `"Количество: 1\nСумма: 7.000\nСр. арифм.: 7.000\nСумма кв.: 49.000\nСр. кв.: 7.000\nДисперсия: 0.000\nСКО: 0.000\nСтанд. откл.: НЕ СУЩЕСТВУЕТ\nНаименьшее: 7.000\nНаибольшее: 7.000\nПоложительных: 1\nОтрицательных: 0\n"` | `""` | 0 |
+| 005 | stats | автоматически | `printf '%b' '\n' \| python3 mathtools.py stats` | `"\n"` | `""` | `"ОШИБКА: последовательность пуста\n"` | 1 |
+| 006 | stats | автоматически | `printf '%b' '1 2 abc\n' \| python3 mathtools.py stats` | `"1 2 abc\n"` | `""` | `"ОШИБКА: abc не является числом\n"` | 1 |
+| 007 | stats --input nosuch.txt | автоматически | `python3 mathtools.py stats --input nosuch.txt` | `""` | `""` | `"ОШИБКА: файл не открывается\n"` | 1 |
+| 008 | series --func sqplus --terms 1 | автоматически | `python3 mathtools.py series --func sqplus --terms 1` | `""` | `"S = 1/(1^2+1) - 1/(2^2+1) + 1/(3^2+1) - ...\nСлагаемых: 1\nСумма ряда: 0.5000\n"` | `""` | 0 |
+| 009 | series --func sqplus --terms 6 | автоматически | `python3 mathtools.py series --func sqplus --terms 6` | `""` | `"S = 1/(1^2+1) - 1/(2^2+1) + 1/(3^2+1) - ...\nСлагаемых: 6\nСумма ряда: 0.3526\n"` | `""` | 0 |
+| 010 | series --func sqplus --eps 0.0001 | автоматически | `python3 mathtools.py series --func sqplus --eps 0.0001` | `""` | `"S = 1/(1^2+1) - 1/(2^2+1) + 1/(3^2+1) - ...\nСлагаемых: 100\nСумма ряда: 0.3639\n"` | `""` | 0 |
+| 011 | series --func third --eps 0.0001 | автоматически | `python3 mathtools.py series --func third --eps 0.0001` | `""` | `"S = 1/3 - 1/6 + 1/9 - ...\nСлагаемых: 3334\nСумма ряда: 0.2310\n"` | `""` | 0 |
+| 012 | series --func sqplus --terms 10000 | автоматически | `python3 mathtools.py series --func sqplus --terms 10000` | `""` | `"S = 1/(1^2+1) - 1/(2^2+1) + 1/(3^2+1) - ...\nСлагаемых: 10000\nСумма ряда: 0.3640\n"` | `""` | 0 |
+| 013 | series --func sqplus --terms 10001 | автоматически | `python3 mathtools.py series --func sqplus --terms 10001` | `""` | `""` | `"ОШИБКА: количество слагаемых вне диапазона\n"` | 1 |
+| 014 | series --func sqplus --eps 0.001 | автоматически | `python3 mathtools.py series --func sqplus --eps 0.001` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 015 | series --func sqplus --terms 6 --eps 0.0001 | автоматически | `python3 mathtools.py series --func sqplus --terms 6 --eps 0.0001` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: argument --eps: not allowed with argument --terms\n"` | 2 |
+| 016 | integrate --func ratio --from 0 --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 10` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 15.7335\nКоличество шагов: 10\n"` | `""` | 0 |
+| 017 | integrate --func ratio --from 0 --to 20 --steps 1000 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 1000` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 16.9459\nКоличество шагов: 1000\n"` | `""` | 0 |
+| 018 | integrate --func ratio --from 0 --to 20 --steps 10000 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 10000` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 16.9545\nКоличество шагов: 10000\n"` | `""` | 0 |
+| 019 | integrate --func ratio --from 5 --to 10 --steps 1000 | автоматически | `python3 mathtools.py integrate --func ratio --from 5 --to 10 --steps 1000` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 4.3937\nКоличество шагов: 1000\n"` | `""` | 0 |
+| 020 | integrate --func root --from -4.9 --to 4.9 --steps 1000 | автоматически | `python3 mathtools.py integrate --func root --from -4.9 --to 4.9 --steps 1000` | `""` | `"F(x) = sqrt(x^2 + 1)\nЗначение интеграла: 26.7976\nКоличество шагов: 1000\n"` | `""` | 0 |
+| 021 | integrate --func root --from -5 --to 5 --steps 100 | автоматически | `python3 mathtools.py integrate --func root --from -5 --to 5 --steps 100` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 022 | integrate --func ratio --from 4 --to 1 --steps 100 | автоматически | `python3 mathtools.py integrate --func ratio --from 4 --to 1 --steps 100` | `""` | `""` | `"ОШИБКА: начальный предел не меньше конечного\n"` | 1 |
+| 023 | integrate --func ratio --from 0 --to 20 --steps 100001 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 100001` | `""` | `""` | `"ОШИБКА: количество шагов вне диапазона\n"` | 1 |
+| 024 | solve -a 1 -b -3 -c 2 | автоматически | `python3 mathtools.py solve -a 1 -b -3 -c 2` | `""` | `"Уравнение квадратное\nD = 1\nx1 = 2.000\nx2 = 1.000\n"` | `""` | 0 |
+| 025 | solve -c 2 -a 1 -b -3 | автоматически | `python3 mathtools.py solve -c 2 -a 1 -b -3` | `""` | `"Уравнение квадратное\nD = 1\nx1 = 2.000\nx2 = 1.000\n"` | `""` | 0 |
+| 026 | solve -a 1 -b -2 -c 1 | автоматически | `python3 mathtools.py solve -a 1 -b -2 -c 1` | `""` | `"Уравнение квадратное\nD = 0\nx = 1.000\n"` | `""` | 0 |
+| 027 | solve -a 1 -b 0 -c 5 | автоматически | `python3 mathtools.py solve -a 1 -b 0 -c 5` | `""` | `"Уравнение квадратное\nD = -20\nДействительных корней нет\n"` | `""` | 0 |
+| 028 | solve -a 0 -b 2 -c -5 | автоматически | `python3 mathtools.py solve -a 0 -b 2 -c -5` | `""` | `"Уравнение линейное\nx = 2.500\n"` | `""` | 0 |
+| 029 | solve -a 0 -b 0 -c 7 | автоматически | `python3 mathtools.py solve -a 0 -b 0 -c 7` | `""` | `""` | `"ОШИБКА: это не уравнение\n"` | 1 |
+| 030 | solve -a 50000 -b 1 -c 1 | автоматически | `python3 mathtools.py solve -a 50000 -b 1 -c 1` | `""` | `""` | `"ОШИБКА: коэффициент A вне допустимого диапазона\n"` | 1 |
+| 031 | solve -a abc -b 1 -c 1 | автоматически | `python3 mathtools.py solve -a abc -b 1 -c 1` | `""` | `""` | `"usage: mathtools.py solve [-h] [-a A] [-b B] [-c C]\nmathtools.py solve: error: argument -a: invalid int value: 'abc'\n"` | 2 |
+| 032 | solve -x 1 -b -3 -c 2 | автоматически | `python3 mathtools.py solve -x 1 -b -3 -c 2` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: -x 1\n"` | 2 |
+| 033 | Вручную ввести 1, -3, 2 по запросу; без конвейера | вручную | `python3 mathtools.py solve` | `"1\n-3\n2\n"` | `"Введите A: Введите B: Введите C: Уравнение квадратное\nD = 1\nx1 = 2.000\nx2 = 1.000\n"` | `""` | 0 |
+| 034 | Вручную ввести 1, x; ошибка возникает до запроса C, вводить 2 не нужно | вручную | `python3 mathtools.py solve` | `"1\nx\n"` | `"Введите A: Введите B: "` | `"ОШИБКА: коэффициент не является целым числом\n"` | 1 |
+| 035 | solve -a 1 -b 2 | автоматически | `python3 mathtools.py solve -a 1 -b 2` | `""` | `""` | `"ОШИБКА: укажите все три коэффициента либо ни одного\n"` | 1 |
+| 036 | Общая справка без параметров | автоматически | `python3 mathtools.py` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\n\nМатематический инструмент: уравнение, статистика, ряд, интеграл.\n\npositional arguments:\n  {solve,stats,series,integrate}\n    solve               решить уравнение A·x²+B·x+C=0\n    stats               статистика по последовательности чисел\n    series              вычислить сумму ряда\n    integrate           численное интегрирование\n\noptions:\n  -h, --help            show this help message and exit\n"` | `""` | 0 |
+| 037 | Общая справка | автоматически | `python3 mathtools.py --help` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\n\nМатематический инструмент: уравнение, статистика, ряд, интеграл.\n\npositional arguments:\n  {solve,stats,series,integrate}\n    solve               решить уравнение A·x²+B·x+C=0\n    stats               статистика по последовательности чисел\n    series              вычислить сумму ряда\n    integrate           численное интегрирование\n\noptions:\n  -h, --help            show this help message and exit\n"` | `""` | 0 |
+| 038 | series --help | автоматически | `python3 mathtools.py series --help` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\n\nВычисляет сумму математического ряда.\n\noptions:\n  -h, --help            show this help message and exit\n  --func {sqplus,third}\n                        формула ряда\n  --terms N             число слагаемых (от 1 до 10000)\n  --eps EPS             точность (0 < EPS <= 0.0001)\n"` | `""` | 0 |
+| 039 | badcmd | автоматически | `python3 mathtools.py badcmd` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: argument command: invalid choice: 'badcmd' (choose from 'solve', 'stats', 'series', 'integrate')\n"` | 2 |
+| 040 | series --func sqplus --terms 0 | автоматически | `python3 mathtools.py series --func sqplus --terms 0` | `""` | `""` | `"ОШИБКА: количество слагаемых вне диапазона\n"` | 1 |
+| 041 | series --func sqplus --eps 0 | автоматически | `python3 mathtools.py series --func sqplus --eps 0` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 042 | series --func third --eps 0.000001 | автоматически | `python3 mathtools.py series --func third --eps 0.000001` | `""` | `""` | `"ОШИБКА: точность не достигнута\n"` | 1 |
+| 043 | series --func sqplus | автоматически | `python3 mathtools.py series --func sqplus` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: one of the arguments --terms --eps is required\n"` | 2 |
+| 044 | integrate --func ratio --from 0 --to 20 --steps 0 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 0` | `""` | `""` | `"ОШИБКА: количество шагов вне диапазона\n"` | 1 |
+| 045 | solve --help | автоматически | `python3 mathtools.py solve --help` | `""` | `"usage: mathtools.py solve [-h] [-a A] [-b B] [-c C]\n\nРешение квадратного или линейного уравнения A·x²+B·x+C=0. Коэффициенты — целые\nчисла \|x\| <= 10000.\n\noptions:\n  -h, --help  show this help message and exit\n  -a A        коэффициент A (целое, \|A\| <= 10000)\n  -b B        коэффициент B (целое, \|B\| <= 10000)\n  -c C        коэффициент C (целое, \|C\| <= 10000)\n"` | `""` | 0 |
+| 046 | stats --help | автоматически | `python3 mathtools.py stats --help` | `""` | `"usage: mathtools.py stats [-h] [--input FILE]\n\nВычисляет статистические показатели последовательности вещественных чисел (не\nболее 20, \|x\| <= 10000).\n\noptions:\n  -h, --help    show this help message and exit\n  --input FILE  прочитать числа из файла (по умолчанию — из стандартного ввода\n                до конца потока)\n"` | `""` | 0 |
+| 047 | integrate --help | автоматически | `python3 mathtools.py integrate --help` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\n\nВычисляет определённый интеграл методом численного интегрирования.\n\noptions:\n  -h, --help           show this help message and exit\n  --func {ratio,root}  подынтегральная функция\n  --from A             нижний предел интегрирования\n  --to B               верхний предел интегрирования\n  --steps N            число шагов (от 1 до 100000)\n"` | `""` | 0 |
+| 048 | solve -a 1 -b -3 -c 2 --unknown 1 | автоматически | `python3 mathtools.py solve -a 1 -b -3 -c 2 --unknown 1` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --unknown 1\n"` | 2 |
+| 049 | solve -a 1 -b -3 -c 2 extra | автоматически | `python3 mathtools.py solve -a 1 -b -3 -c 2 extra` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: extra\n"` | 2 |
+| 050 | solve -a | автоматически | `python3 mathtools.py solve -a` | `""` | `""` | `"usage: mathtools.py solve [-h] [-a A] [-b B] [-c C]\nmathtools.py solve: error: argument -a: expected one argument\n"` | 2 |
+| 051 | solve -a 1 -b -3 -c 2 --he | автоматически | `python3 mathtools.py solve -a 1 -b -3 -c 2 --he` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --he\n"` | 2 |
+| 052 | stats --input numbers.txt --unknown 1 | автоматически | `python3 mathtools.py stats --input numbers.txt --unknown 1` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --unknown 1\n"` | 2 |
+| 053 | stats --input numbers.txt extra | автоматически | `python3 mathtools.py stats --input numbers.txt extra` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: extra\n"` | 2 |
+| 054 | stats --input | автоматически | `python3 mathtools.py stats --input` | `""` | `""` | `"usage: mathtools.py stats [-h] [--input FILE]\nmathtools.py stats: error: argument --input: expected one argument\n"` | 2 |
+| 055 | stats --in numbers.txt | автоматически | `python3 mathtools.py stats --in numbers.txt` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --in numbers.txt\n"` | 2 |
+| 056 | series --func sqplus --terms 6 --unknown 1 | автоматически | `python3 mathtools.py series --func sqplus --terms 6 --unknown 1` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --unknown 1\n"` | 2 |
+| 057 | series --func sqplus --terms 6 extra | автоматически | `python3 mathtools.py series --func sqplus --terms 6 extra` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: extra\n"` | 2 |
+| 058 | series --terms | автоматически | `python3 mathtools.py series --terms` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: argument --terms: expected one argument\n"` | 2 |
+| 059 | series --func sqplus --terms 6 --te 2 | автоматически | `python3 mathtools.py series --func sqplus --terms 6 --te 2` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --te 2\n"` | 2 |
+| 060 | integrate --func ratio --from 0 --to 20 --steps 10 --unknown 1 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 10 --unknown 1` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --unknown 1\n"` | 2 |
+| 061 | integrate --func ratio --from 0 --to 20 --steps 10 extra | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 10 extra` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: extra\n"` | 2 |
+| 062 | integrate --steps | автоматически | `python3 mathtools.py integrate --steps` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: argument --steps: expected one argument\n"` | 2 |
+| 063 | integrate --func ratio --from 0 --to 20 --steps 10 --ste 2 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 10 --ste 2` | `""` | `""` | `"usage: mathtools.py [-h] {solve,stats,series,integrate} ...\nmathtools.py: error: unrecognized arguments: --ste 2\n"` | 2 |
+| 064 | series --func unknown --terms 6 | автоматически | `python3 mathtools.py series --func unknown --terms 6` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: argument --func: invalid choice: 'unknown' (choose from 'sqplus', 'third')\n"` | 2 |
+| 065 | integrate --func unknown --from 0 --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --func unknown --from 0 --to 20 --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: argument --func: invalid choice: 'unknown' (choose from 'ratio', 'root')\n"` | 2 |
+| 066 | series --terms 1 | автоматически | `python3 mathtools.py series --terms 1` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: the following arguments are required: --func\n"` | 2 |
+| 067 | integrate --from 0 --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --from 0 --to 20 --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: the following arguments are required: --func\n"` | 2 |
+| 068 | integrate --func ratio --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --to 20 --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: the following arguments are required: --from\n"` | 2 |
+| 069 | integrate --func ratio --from 0 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: the following arguments are required: --to\n"` | 2 |
+| 070 | integrate --func ratio --from 0 --to 20 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: the following arguments are required: --steps\n"` | 2 |
+| 071 | stats | автоматически | `printf '%b' '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n' \| python3 mathtools.py stats` | `"1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"` | `"Количество: 20\nСумма: 20.000\nСр. арифм.: 1.000\nСумма кв.: 20.000\nСр. кв.: 1.000\nДисперсия: 0.000\nСКО: 0.000\nСтанд. откл.: 0.000\nНаименьшее: 1.000\nНаибольшее: 1.000\nПоложительных: 20\nОтрицательных: 0\n"` | `""` | 0 |
+| 072 | stats | автоматически | `printf '%b' '10000\n' \| python3 mathtools.py stats` | `"10000\n"` | `"Количество: 1\nСумма: 10000.000\nСр. арифм.: 10000.000\nСумма кв.: 100000000.000\nСр. кв.: 10000.000\nДисперсия: 0.000\nСКО: 0.000\nСтанд. откл.: НЕ СУЩЕСТВУЕТ\nНаименьшее: 10000.000\nНаибольшее: 10000.000\nПоложительных: 1\nОтрицательных: 0\n"` | `""` | 0 |
+| 073 | stats | автоматически | `printf '%b' '-10000\n' \| python3 mathtools.py stats` | `"-10000\n"` | `"Количество: 1\nСумма: -10000.000\nСр. арифм.: -10000.000\nСумма кв.: 100000000.000\nСр. кв.: 10000.000\nДисперсия: 0.000\nСКО: 0.000\nСтанд. откл.: НЕ СУЩЕСТВУЕТ\nНаименьшее: -10000.000\nНаибольшее: -10000.000\nПоложительных: 0\nОтрицательных: 1\n"` | `""` | 0 |
+| 074 | stats | автоматически | `printf '%b' '-2 0 3\n' \| python3 mathtools.py stats` | `"-2 0 3\n"` | `"Количество: 3\nСумма: 1.000\nСр. арифм.: 0.333\nСумма кв.: 13.000\nСр. кв.: 2.082\nДисперсия: 4.222\nСКО: 2.055\nСтанд. откл.: 2.517\nНаименьшее: -2.000\nНаибольшее: 3.000\nПоложительных: 1\nОтрицательных: 1\n"` | `""` | 0 |
+| 075 | Пробелы, табуляция и несколько строк stdin до EOF | автоматически | `printf '%b' '4\t1\n\n  5  \n' \| python3 mathtools.py stats` | `"4\t1\n\n  5  \n"` | `"Количество: 3\nСумма: 10.000\nСр. арифм.: 3.333\nСумма кв.: 42.000\nСр. кв.: 3.742\nДисперсия: 2.889\nСКО: 1.700\nСтанд. откл.: 2.082\nНаименьшее: 1.000\nНаибольшее: 5.000\nПоложительных: 3\nОтрицательных: 0\n"` | `""` | 0 |
+| 076 | stats | автоматически | `printf '%b' '' \| python3 mathtools.py stats` | `""` | `""` | `"ОШИБКА: последовательность пуста\n"` | 1 |
+| 077 | stats | автоматически | `printf '%b' '  \t\n\n' \| python3 mathtools.py stats` | `"  \t\n\n"` | `""` | `"ОШИБКА: последовательность пуста\n"` | 1 |
+| 078 | stats | автоматически | `printf '%b' '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n' \| python3 mathtools.py stats` | `"1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"` | `""` | `"ОШИБКА: чисел больше 20\n"` | 1 |
+| 079 | stats | автоматически | `printf '%b' '10001\n' \| python3 mathtools.py stats` | `"10001\n"` | `""` | `"ОШИБКА: 10001 не является допустимым числом\n"` | 1 |
+| 080 | stats | автоматически | `printf '%b' '-10001\n' \| python3 mathtools.py stats` | `"-10001\n"` | `""` | `"ОШИБКА: -10001 не является допустимым числом\n"` | 1 |
+| 081 | stats | автоматически | `printf '%b' 'nan\n' \| python3 mathtools.py stats` | `"nan\n"` | `""` | `"ОШИБКА: nan не является допустимым числом\n"` | 1 |
+| 082 | stats | автоматически | `printf '%b' 'inf\n' \| python3 mathtools.py stats` | `"inf\n"` | `""` | `"ОШИБКА: inf не является допустимым числом\n"` | 1 |
+| 083 | stats | автоматически | `printf '%b' '-inf\n' \| python3 mathtools.py stats` | `"-inf\n"` | `""` | `"ОШИБКА: -inf не является допустимым числом\n"` | 1 |
+| 084 | solve -a 0 -b 0 -c 0 | автоматически | `python3 mathtools.py solve -a 0 -b 0 -c 0` | `""` | `""` | `"ОШИБКА: это не уравнение\n"` | 1 |
+| 085 | solve -a 10000 -b 0 -c -10000 | автоматически | `python3 mathtools.py solve -a 10000 -b 0 -c -10000` | `""` | `"Уравнение квадратное\nD = 400000000\nx1 = 1.000\nx2 = -1.000\n"` | `""` | 0 |
+| 086 | solve -a -10001 -b 1 -c 1 | автоматически | `python3 mathtools.py solve -a -10001 -b 1 -c 1` | `""` | `""` | `"ОШИБКА: коэффициент A вне допустимого диапазона\n"` | 1 |
+| 087 | solve -a 1 -b -10001 -c 1 | автоматически | `python3 mathtools.py solve -a 1 -b -10001 -c 1` | `""` | `""` | `"ОШИБКА: коэффициент B вне допустимого диапазона\n"` | 1 |
+| 088 | solve -a 1 -b 1 -c -10001 | автоматически | `python3 mathtools.py solve -a 1 -b 1 -c -10001` | `""` | `""` | `"ОШИБКА: коэффициент C вне допустимого диапазона\n"` | 1 |
+| 089 | solve -a 1.5 -b 1 -c 1 | автоматически | `python3 mathtools.py solve -a 1.5 -b 1 -c 1` | `""` | `""` | `"usage: mathtools.py solve [-h] [-a A] [-b B] [-c C]\nmathtools.py solve: error: argument -a: invalid int value: '1.5'\n"` | 2 |
+| 090 | solve -a 1 | автоматически | `python3 mathtools.py solve -a 1` | `""` | `""` | `"ОШИБКА: укажите все три коэффициента либо ни одного\n"` | 1 |
+| 091 | solve -b 2 -c 3 | автоматически | `python3 mathtools.py solve -b 2 -c 3` | `""` | `""` | `"ОШИБКА: укажите все три коэффициента либо ни одного\n"` | 1 |
+| 092 | series --func sqplus --eps=-0.0001 | автоматически | `python3 mathtools.py series --func sqplus --eps=-0.0001` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 093 | series --func sqplus --eps=nan | автоматически | `python3 mathtools.py series --func sqplus --eps=nan` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 094 | series --func sqplus --eps=inf | автоматически | `python3 mathtools.py series --func sqplus --eps=inf` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 095 | series --func sqplus --eps=-inf | автоматически | `python3 mathtools.py series --func sqplus --eps=-inf` | `""` | `""` | `"ОШИБКА: точность вне диапазона\n"` | 1 |
+| 096 | series --func sqplus --terms -1 | автоматически | `python3 mathtools.py series --func sqplus --terms -1` | `""` | `""` | `"ОШИБКА: количество слагаемых вне диапазона\n"` | 1 |
+| 097 | series --func third --terms 1 | автоматически | `python3 mathtools.py series --func third --terms 1` | `""` | `"S = 1/3 - 1/6 + 1/9 - ...\nСлагаемых: 1\nСумма ряда: 0.3333\n"` | `""` | 0 |
+| 098 | series --func sqplus --terms abc | автоматически | `python3 mathtools.py series --func sqplus --terms abc` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: argument --terms: invalid int value: 'abc'\n"` | 2 |
+| 099 | series --func sqplus --eps abc | автоматически | `python3 mathtools.py series --func sqplus --eps abc` | `""` | `""` | `"usage: mathtools.py series [-h] --func {sqplus,third} (--terms N \| --eps EPS)\nmathtools.py series: error: argument --eps: invalid float value: 'abc'\n"` | 2 |
+| 100 | integrate --func ratio --from 1 --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 1 --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: начальный предел не меньше конечного\n"` | 1 |
+| 101 | integrate --func ratio --from -0.001 --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from -0.001 --to 20 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 102 | integrate --func ratio --from 0 --to 20.001 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20.001 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 103 | integrate --func ratio --from -2 --to -1 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from -2 --to -1 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 104 | integrate --func ratio --from 21 --to 22 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 21 --to 22 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 105 | integrate --func root --from -5 --to 0 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from -5 --to 0 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 106 | integrate --func root --from 0 --to 5 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 0 --to 5 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 107 | integrate --func root --from -5.001 --to 0 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from -5.001 --to 0 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 108 | integrate --func root --from 0 --to 5.001 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 0 --to 5.001 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 109 | integrate --func root --from -6 --to -5.1 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from -6 --to -5.1 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 110 | integrate --func root --from 5.1 --to 6 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 5.1 --to 6 --steps 10` | `""` | `""` | `"ОШИБКА: предел вне промежутка\n"` | 1 |
+| 111 | integrate --func ratio --from 0 --to 20 --steps 1 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 1` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 0.0000\nКоличество шагов: 1\n"` | `""` | 0 |
+| 112 | integrate --func ratio --from 0 --to 20 --steps 100000 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 100000` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 16.9554\nКоличество шагов: 100000\n"` | `""` | 0 |
+| 113 | integrate --func ratio --from 0 --to 20 --steps -1 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps -1` | `""` | `""` | `"ОШИБКА: количество шагов вне диапазона\n"` | 1 |
+| 114 | integrate --func ratio --from=nan --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from=nan --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 115 | integrate --func ratio --from=inf --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from=inf --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 116 | integrate --func ratio --from=-inf --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from=-inf --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 117 | integrate --func ratio --from 0 --to=nan --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to=nan --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 118 | integrate --func ratio --from 0 --to=inf --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to=inf --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 119 | integrate --func ratio --from 0 --to=-inf --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to=-inf --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 120 | integrate --func root --from=nan --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from=nan --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 121 | integrate --func root --from=inf --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from=inf --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 122 | integrate --func root --from=-inf --to 1 --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from=-inf --to 1 --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 123 | integrate --func root --from 0 --to=nan --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 0 --to=nan --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 124 | integrate --func root --from 0 --to=inf --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 0 --to=inf --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 125 | integrate --func root --from 0 --to=-inf --steps 10 | автоматически | `python3 mathtools.py integrate --func root --from 0 --to=-inf --steps 10` | `""` | `""` | `"ОШИБКА: пределы интегрирования должны быть конечными числами\n"` | 1 |
+| 126 | integrate --func ratio --from abc --to 20 --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from abc --to 20 --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: argument --from: invalid float value: 'abc'\n"` | 2 |
+| 127 | integrate --func ratio --from 0 --to abc --steps 10 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to abc --steps 10` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: argument --to: invalid float value: 'abc'\n"` | 2 |
+| 128 | integrate --func ratio --from 0 --to 20 --steps abc | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps abc` | `""` | `""` | `"usage: mathtools.py integrate [-h] --func {ratio,root} --from A --to B\n                              --steps N\nmathtools.py integrate: error: argument --steps: invalid int value: 'abc'\n"` | 2 |
+| 129 | integrate --func ratio --from 0 --to 20 --steps 100 | автоматически | `python3 mathtools.py integrate --func ratio --from 0 --to 20 --steps 100` | `""` | `"F(x) = x / (x + 1)\nЗначение интеграла: 16.8569\nКоличество шагов: 100\n"` | `""` | 0 |
+| 130 | integrate --func root --from -4.9 --to 4.9 --steps 100 | автоматически | `python3 mathtools.py integrate --func root --from -4.9 --to 4.9 --steps 100` | `""` | `"F(x) = sqrt(x^2 + 1)\nЗначение интеграла: 26.7991\nКоличество шагов: 100\n"` | `""` | 0 |
+| 131 | integrate --func root --from -4.9 --to 4.9 --steps 10000 | автоматически | `python3 mathtools.py integrate --func root --from -4.9 --to 4.9 --steps 10000` | `""` | `"F(x) = sqrt(x^2 + 1)\nЗначение интеграла: 26.7975\nКоличество шагов: 10000\n"` | `""` | 0 |

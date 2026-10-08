@@ -11,7 +11,7 @@ def parse_int(text):
     try:
         return int(text)
     except (ValueError, TypeError):
-        raise ValueError("ОШИБКА: коэффициент не является целым числом")
+        raise ValueError("коэффициент не является целым числом")
 
 
 def parse_float(text):
@@ -19,9 +19,9 @@ def parse_float(text):
     try:
         num = float(text)
     except (ValueError, TypeError):
-        raise ValueError(f"ОШИБКА: {text!r} не является числом")
+        raise ValueError(f"{text} не является числом")
     if not isfinite(num) or abs(num) > stats.MAX_VALUE:
-        raise ValueError(f"ОШИБКА: {text!r} не является допустимым числом")
+        raise ValueError(f"{text} не является допустимым числом")
     return num
 
 
@@ -29,18 +29,18 @@ def read_numbers(source):
     """Вернуть проверенный список чисел из строки source или потока строк."""
     numbers = []
 
-    if type(source) == str:
-        for word in source.split(" "):
+    if isinstance(source, str):
+        for word in source.split():
             numbers.append(parse_float(word))
     else:
         for line in source:
-            for word in line.split(" "):
+            for word in line.split():
                 numbers.append(parse_float(word))
 
     if len(numbers) == 0:
-        raise ValueError("ОШИБКА: список чисел пуст")
+        raise ValueError("последовательность пуста")
     if len(numbers) > stats.MAX_COUNT:
-        raise ValueError(f"ОШИБКА: чисел больше {stats.MAX_COUNT}")
+        raise ValueError(f"чисел больше {stats.MAX_COUNT}")
     return numbers
 
 
@@ -60,11 +60,11 @@ def handle_solve(args):
         b = parse_int(input("Введите B: "))
         c = parse_int(input("Введите C: "))
     elif args.a is not None and args.b is not None and args.c is not None:
-        a = parse_int(args.a)
-        b = parse_int(args.b)
-        c = parse_int(args.c)
+        a = args.a
+        b = args.b
+        c = args.c
     else:
-        raise ValueError("укажите все три коэффициента (-a, -b, -c) или ни одного")
+        raise ValueError("укажите все три коэффициента либо ни одного")
 
     equation.validate(a, b, c)
     kind, d, roots = equation.solve(a, b, c)
@@ -88,11 +88,13 @@ def handle_solve(args):
 def handle_stats(args):
     """Прочитать числа из args.input или stdin, вывести статистику и вернуть 0."""
     if args.input is None:
-        nums_input = input("Введите числа: ")
-        numbers = read_numbers(nums_input)
+        numbers = read_numbers(sys.stdin)
     else:
-        with open(args.input, encoding="utf-8-sig") as f:
-            numbers = read_numbers(f)
+        try:
+            with open(args.input, encoding="utf-8-sig") as f:
+                numbers = read_numbers(f)
+        except OSError as exc:
+            raise ValueError("файл не открывается") from exc
 
     s = stats.calc_stats(numbers)
 
@@ -127,8 +129,8 @@ def handle_series(args):
         result, count = series.sum_by_eps(term, args.eps)
 
     print(formula)
-    print(f"Сумма: {result:.{series.DIGITS}f}")
-    print(f"Количество слагаемых: {count}")
+    print(f"Слагаемых: {count}")
+    print(f"Сумма ряда: {result:.{series.DIGITS}f}")
 
     return 0
 
@@ -141,7 +143,7 @@ def handle_integrate(args):
     result = integration.integrate(function, args.a, args.b, args.steps)
 
     print(formula)
-    print(f"Интеграл: {result:.{integration.DIGITS}f}")
+    print(f"Значение интеграла: {result:.{integration.DIGITS}f}")
     print(f"Количество шагов: {args.steps}")
 
     return 0

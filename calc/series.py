@@ -29,7 +29,7 @@ def addend_third(n):
 # ------ FORMULAS --------
 
 FORMULAS = {
-    "sqplus": (addend_sqplus, "S = 1/(1^2+1) - 1/(2^2+1) + ..."),
+    "sqplus": (addend_sqplus, "S = 1/(1^2+1) - 1/(2^2+1) + 1/(3^2+1) - ..."),
     "third": (addend_third, "S = 1/3 - 1/6 + 1/9 - ..."),
 }
 
@@ -38,9 +38,9 @@ FORMULAS = {
 def validate(terms, eps):
     """Проверить пределы terms и eps; неиспользуемый параметр равен None."""
     if terms is not None and not 1 <= terms <= MAX_TERMS:
-        raise ValueError(f"ОШИБКА: число слагаемых должно быть от 1 до {MAX_TERMS}")
+        raise ValueError("количество слагаемых вне диапазона")
     if eps is not None and not (math.isfinite(eps) and 0 < eps <= MAX_EPS):
-        raise ValueError(f"ОШИБКА: точность должна быть конечным числом: 0 < eps <= {MAX_EPS}")
+        raise ValueError("точность вне диапазона")
 
 # ------ SUMMATION --------
 
@@ -64,4 +64,4 @@ def sum_by_eps(term, eps):
         if abs(value) < eps:
             return result, n
         if n >= MAX_ITERATIONS:
-            raise ValueError(f"ОШИБКА: точность не достигнута за {MAX_ITERATIONS} слагаемых")
+            raise ValueError("точность не достигнута")
