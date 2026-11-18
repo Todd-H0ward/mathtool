@@ -2,7 +2,7 @@ import sys
 from math import isfinite
 
 from cli import build_parser
-from calc import equation, stats, series, integration
+from calc import equation, stats, series, integration, arrays
 
 # ------ HELPERS ------
 
@@ -148,6 +148,18 @@ def handle_integrate(args):
 
     return 0
 
+def handle_fill(args):
+    return 1
+
+
+def handle_sort(args):
+    return 1
+
+
+def handle_search(args):
+    return 1
+
+
 # ------ COMMAND TABLE --------
 
 HANDLERS = {
@@ -155,6 +167,9 @@ HANDLERS = {
     "stats": handle_stats,
     "series": handle_series,
     "integrate": handle_integrate,
+    "fill": handle_fill,
+    "sort": handle_sort,
+    "search": handle_search,
 }
 
 
