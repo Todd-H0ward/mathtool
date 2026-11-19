@@ -2,7 +2,7 @@ import sys
 from math import isfinite
 
 from cli import build_parser
-from calc import equation, stats, series, integration, arrays
+from calc import equation, sorting, stats, series, integration, arrays
 
 # ------ HELPERS ------
 
@@ -166,7 +166,17 @@ def handle_fill(args):
 
 
 def handle_sort(args):
-    return 1
+    """Прочитать массив, отсортировать и вывести или записать результат."""
+    array = arrays.read_array(args.input)
+    method = sorting.METHODS[args.method]
+    descending = args.order == "desc"
+    method(array, descending)
+
+    arrays.write_array(array, args.output)
+    if args.output:
+        print(f"Записано элементов: {len(array)}; файл: {args.output}")
+    print("Сортировка прошла успешно")
+    return 0
 
 
 def handle_search(args):

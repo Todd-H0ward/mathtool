@@ -2,6 +2,7 @@ import argparse
 
 from calc.series import FORMULAS, MAX_EPS, MAX_TERMS
 from calc.integration import FORMULAS as INTEGRATION_FORMULAS, MAX_STEPS
+from calc.sorting import METHODS
 from calc.equation import MAX_COEFFICIENT
 from calc.stats import MAX_COUNT, MAX_VALUE
 from calc.arrays import (
@@ -105,7 +106,7 @@ def build_parser():
         allow_abbrev=False
     )
     p_sort.add_argument("-m", "--method", required=True,
-                        choices=("bubble", "selection", "insertion", "counting"),
+                        choices=METHODS,
                         help="метод сортировки")
     p_sort.add_argument("--order", choices=("asc", "desc"), default="asc",
                         help="asc — по возрастанию, desc — по убыванию (по умолчанию asc)")
