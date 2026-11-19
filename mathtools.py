@@ -149,19 +149,20 @@ def handle_integrate(args):
     return 0
 
 def handle_fill(args):
-    """Заполнить массив рандомными числами"""
-
-    if args.min < arrays.MIN_VALUE:
-        raise ValueError("Минимальная граница меньше чем ограничение")
-
-    if args.max > arrays.MAX_VALUE:
-        raise ValueError("Максимальная граница превышает ограничение")
+    """Создать массив и вывести его или записать в файл."""
+    if not 1 <= args.count <= arrays.MAX_COUNT:
+        raise ValueError(f"количество элементов вне диапазона 1..{arrays.MAX_COUNT}")
+    if not arrays.MIN_VALUE <= args.min <= arrays.MAX_VALUE:
+        raise ValueError(f"min вне диапазона {arrays.MIN_VALUE}..{arrays.MAX_VALUE}")
+    if not arrays.MIN_VALUE <= args.max <= arrays.MAX_VALUE:
+        raise ValueError(f"max вне диапазона {arrays.MIN_VALUE}..{arrays.MAX_VALUE}")
+    if args.min > args.max:
+        raise ValueError("min не должен превышать max")
 
     result = arrays.fill(args.count, args.min, args.max, args.seed)
-
-    print(result)
     arrays.write_array(result, args.output)
-
+    if args.output:
+        print(f"Записано элементов: {len(result)} в файл {args.output}")
     return 0
 
 
@@ -174,8 +175,8 @@ def handle_sort(args):
 
     arrays.write_array(array, args.output)
     if args.output:
-        print(f"Записано элементов: {len(array)}; файл: {args.output}")
-    print("Сортировка прошла успешно")
+        print(f"Записано элементов: {len(array)} в файл {args.output}")
+    print("Массив отсортирован.")
     
     return 0
 
@@ -188,7 +189,7 @@ def handle_search(args):
     array = arrays.read_array(args.input)
     for i in range(len(array) - 1):
         if array[i] > array[i + 1]:
-            raise ValueError("массив должен быть отсортирован по возрастанию")
+            raise ValueError("массив не упорядочен по возрастанию")
 
     index = arrays.binary_search(array, args.value)
     if index is None:
