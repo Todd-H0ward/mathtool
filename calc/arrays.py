@@ -57,3 +57,20 @@ def fill(count, low = MIN_VALUE, high = MAX_VALUE, seed = ""):
         list.append(random.randint(low, high))
 
     return list
+
+
+def binary_search(array, value):
+    """Вернуть индекс значения в массиве по возрастанию или None."""
+    left = 0
+    right = len(array) - 1
+
+    while left <= right:
+        middle = (left + right) // 2
+        if array[middle] == value:
+            return middle
+        if array[middle] < value:
+            left = middle + 1
+        else:
+            right = middle - 1
+
+    return None

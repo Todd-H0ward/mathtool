@@ -181,7 +181,22 @@ def handle_sort(args):
 
 
 def handle_search(args):
-    return 1
+    """Проверить массив и найти значение двоичным поиском."""
+    if abs(args.value) > arrays.MAX_SEARCH:
+        raise ValueError(f"модуль искомого числа должен быть не больше {arrays.MAX_SEARCH}")
+
+    array = arrays.read_array(args.input)
+    for i in range(len(array) - 1):
+        if array[i] > array[i + 1]:
+            raise ValueError("массив должен быть отсортирован по возрастанию")
+
+    index = arrays.binary_search(array, args.value)
+    if index is None:
+        print(f"Значение {args.value} не найдено.", file=sys.stderr)
+        return 1
+
+    print(f"Значение {args.value} имеет элемент с индексом {index + 1}.")
+    return 0
 
 
 # ------ COMMAND TABLE --------
