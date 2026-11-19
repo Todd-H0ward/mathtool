@@ -176,6 +176,7 @@ def handle_sort(args):
     if args.output:
         print(f"Записано элементов: {len(array)}; файл: {args.output}")
     print("Сортировка прошла успешно")
+    
     return 0
 
 

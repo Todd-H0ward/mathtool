@@ -24,8 +24,35 @@ def bubble_sort(array, descending=False):
             break
 
 
+def selection_sort(array, descending=False):
+    """Отсортировать список на месте выбором; вернуть None."""
+    n = len(array)
+
+    for i in range(n - 1):
+        best = i
+        for j in range(i + 1, n):
+            if not_in_order(array[best], array[j], descending):
+                best = j
+        array[i], array[best] = array[best], array[i]
+
+
+def insertion_sort(array, descending=False):
+    """Отсортировать список на месте вставками; вернуть None."""
+    n = len(array)
+
+    for i in range(1, n):
+        current = array[i]
+        j = i
+        while j > 0 and not_in_order(array[j - 1], current, descending):
+            array[j] = array[j - 1]
+            j -= 1
+        array[j] = current
+
+
 # ------ METHODS --------
 
 METHODS = {
-    "bubble": bubble_sort
+    "bubble": bubble_sort,
+    "selection": selection_sort,
+    "insertion": insertion_sort,
 }   
