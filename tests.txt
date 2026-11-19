@@ -159,53 +159,57 @@ EOF: Ctrl+D в Unix/macOS (на пустой строке), Ctrl+Z и Enter в W
 Команды без stdin читают файл или не требуют ввода.
 Файлы с результатами создаются или перезаписываются командами таблицы.
 Тексты системных ошибок чтения/записи приведены для macOS/Linux.
+<T> в stderr — фактическое время в секундах с шестью знаками после запятой
+(например, 0.012345); оно меняется при каждом запуске.
+Время выводится после расчёта, до вывода результата или попытки записи файла.
+При ошибке чтения/данных до сортировки строки времени нет.
 
 | № | Проверка | Команда | stdin | Завершение ввода | stdout | stderr | Код возврата | Выходной файл (UTF-8) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Генерация с seed | `python mathtools.py fill -c 5 --seed 42` | `""` | — | `"63 -72 -94 89 -30\n"` | `""` | 0 | — |
 | 2 | Недопустимое количество | `python mathtools.py fill -c 0` | `""` | — | `""` | `"ОШИБКА: количество элементов вне диапазона 1..1000000\n"` | 1 | — |
-| 3 | Пузырьковая сортировка из файла | `python mathtools.py sort -m bubble -i example.txt` | `""` | — | `"-76 -5 24 43 81\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 4 | Сортировка выбором с записью | `python mathtools.py sort -m selection -i example.txt -o example_sorted.txt` | `""` | — | `"Записано элементов: 5 в файл example_sorted.txt\nМассив отсортирован.\n"` | `""` | 0 | `example_sorted.txt`: `"-76 -5 24 43 81\n"` |
-| 5 | Сортировка вставками из файла | `python mathtools.py sort -m insertion -i example.txt` | `""` | — | `"-76 -5 24 43 81\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 6 | Сортировка подсчётом по убыванию | `python mathtools.py sort -m counting -i example.txt --order desc` | `""` | — | `"81 43 24 -5 -76\nМассив отсортирован.\n"` | `""` | 0 | — |
+| 3 | Пузырьковая сортировка из файла | `python mathtools.py sort -m bubble -i example.txt` | `""` | — | `"-76 -5 24 43 81\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 4 | Сортировка выбором с записью | `python mathtools.py sort -m selection -i example.txt -o example_sorted.txt` | `""` | — | `"Записано элементов: 5 в файл example_sorted.txt\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | `example_sorted.txt`: `"-76 -5 24 43 81\n"` |
+| 5 | Сортировка вставками из файла | `python mathtools.py sort -m insertion -i example.txt` | `""` | — | `"-76 -5 24 43 81\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 6 | Сортировка подсчётом по убыванию | `python mathtools.py sort -m counting -i example.txt --order desc` | `""` | — | `"81 43 24 -5 -76\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
 | 7 | Найдено | `python mathtools.py search -v 43 -i example_sorted.txt` | `""` | — | `"Значение 43 имеет элемент с индексом 4.\n"` | `""` | 0 | — |
 | 8 | Не найдено | `python mathtools.py search -v 15 -i example_sorted.txt` | `""` | — | `""` | `"Значение 15 не найдено.\n"` | 1 | — |
 | 9 | Неупорядоченный массив | `python mathtools.py search -v 43 -i example.txt` | `""` | — | `""` | `"ОШИБКА: массив не упорядочен по возрастанию\n"` | 1 | — |
-| 10 | bubble, asc, повторы | `python mathtools.py sort -m bubble --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 11 | bubble, asc, готовый порядок | `python mathtools.py sort -m bubble --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 12 | bubble, asc, обратный порядок | `python mathtools.py sort -m bubble --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 13 | bubble, asc, один элемент | `python mathtools.py sort -m bubble --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 14 | bubble, desc, повторы | `python mathtools.py sort -m bubble --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 15 | bubble, desc, готовый порядок | `python mathtools.py sort -m bubble --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 16 | bubble, desc, обратный порядок | `python mathtools.py sort -m bubble --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 17 | bubble, desc, один элемент | `python mathtools.py sort -m bubble --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 18 | selection, asc, повторы | `python mathtools.py sort -m selection --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 19 | selection, asc, готовый порядок | `python mathtools.py sort -m selection --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 20 | selection, asc, обратный порядок | `python mathtools.py sort -m selection --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 21 | selection, asc, один элемент | `python mathtools.py sort -m selection --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 22 | selection, desc, повторы | `python mathtools.py sort -m selection --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 23 | selection, desc, готовый порядок | `python mathtools.py sort -m selection --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 24 | selection, desc, обратный порядок | `python mathtools.py sort -m selection --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 25 | selection, desc, один элемент | `python mathtools.py sort -m selection --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 26 | insertion, asc, повторы | `python mathtools.py sort -m insertion --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 27 | insertion, asc, готовый порядок | `python mathtools.py sort -m insertion --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 28 | insertion, asc, обратный порядок | `python mathtools.py sort -m insertion --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 29 | insertion, asc, один элемент | `python mathtools.py sort -m insertion --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 30 | insertion, desc, повторы | `python mathtools.py sort -m insertion --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 31 | insertion, desc, готовый порядок | `python mathtools.py sort -m insertion --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 32 | insertion, desc, обратный порядок | `python mathtools.py sort -m insertion --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 33 | insertion, desc, один элемент | `python mathtools.py sort -m insertion --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 34 | counting, asc, повторы | `python mathtools.py sort -m counting --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 35 | counting, asc, готовый порядок | `python mathtools.py sort -m counting --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 36 | counting, asc, обратный порядок | `python mathtools.py sort -m counting --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 37 | counting, asc, один элемент | `python mathtools.py sort -m counting --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 38 | counting, desc, повторы | `python mathtools.py sort -m counting --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 39 | counting, desc, готовый порядок | `python mathtools.py sort -m counting --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 40 | counting, desc, обратный порядок | `python mathtools.py sort -m counting --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 41 | counting, desc, один элемент | `python mathtools.py sort -m counting --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `""` | 0 | — |
+| 10 | bubble, asc, повторы | `python mathtools.py sort -m bubble --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 11 | bubble, asc, готовый порядок | `python mathtools.py sort -m bubble --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 12 | bubble, asc, обратный порядок | `python mathtools.py sort -m bubble --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 13 | bubble, asc, один элемент | `python mathtools.py sort -m bubble --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 14 | bubble, desc, повторы | `python mathtools.py sort -m bubble --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 15 | bubble, desc, готовый порядок | `python mathtools.py sort -m bubble --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 16 | bubble, desc, обратный порядок | `python mathtools.py sort -m bubble --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 17 | bubble, desc, один элемент | `python mathtools.py sort -m bubble --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 18 | selection, asc, повторы | `python mathtools.py sort -m selection --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 19 | selection, asc, готовый порядок | `python mathtools.py sort -m selection --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 20 | selection, asc, обратный порядок | `python mathtools.py sort -m selection --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 21 | selection, asc, один элемент | `python mathtools.py sort -m selection --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 22 | selection, desc, повторы | `python mathtools.py sort -m selection --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 23 | selection, desc, готовый порядок | `python mathtools.py sort -m selection --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 24 | selection, desc, обратный порядок | `python mathtools.py sort -m selection --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 25 | selection, desc, один элемент | `python mathtools.py sort -m selection --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (selection): <T> с\n"` | 0 | — |
+| 26 | insertion, asc, повторы | `python mathtools.py sort -m insertion --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 27 | insertion, asc, готовый порядок | `python mathtools.py sort -m insertion --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 28 | insertion, asc, обратный порядок | `python mathtools.py sort -m insertion --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 29 | insertion, asc, один элемент | `python mathtools.py sort -m insertion --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 30 | insertion, desc, повторы | `python mathtools.py sort -m insertion --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 31 | insertion, desc, готовый порядок | `python mathtools.py sort -m insertion --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 32 | insertion, desc, обратный порядок | `python mathtools.py sort -m insertion --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 33 | insertion, desc, один элемент | `python mathtools.py sort -m insertion --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
+| 34 | counting, asc, повторы | `python mathtools.py sort -m counting --order asc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"-1 -1 0 2 2\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 35 | counting, asc, готовый порядок | `python mathtools.py sort -m counting --order asc` | `"-100 0 100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 36 | counting, asc, обратный порядок | `python mathtools.py sort -m counting --order asc` | `"100 0 -100\n\n"` | пустая строка | `"-100 0 100\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 37 | counting, asc, один элемент | `python mathtools.py sort -m counting --order asc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 38 | counting, desc, повторы | `python mathtools.py sort -m counting --order desc` | `"2 -1 2 0 -1\n\n"` | пустая строка | `"2 2 0 -1 -1\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 39 | counting, desc, готовый порядок | `python mathtools.py sort -m counting --order desc` | `"100 0 -100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 40 | counting, desc, обратный порядок | `python mathtools.py sort -m counting --order desc` | `"-100 0 100\n\n"` | пустая строка | `"100 0 -100\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
+| 41 | counting, desc, один элемент | `python mathtools.py sort -m counting --order desc` | `"7\n\n"` | пустая строка | `"7\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
 | 42 | Повторяемость seed | `python mathtools.py fill -c 5 --seed 42` | `""` | — | `"63 -72 -94 89 -30\n"` | `""` | 0 | — |
 | 43 | Запись fill | `python mathtools.py fill -c 5 --seed 42 -o generated.txt` | `""` | — | `"Записано элементов: 5 в файл generated.txt\n"` | `""` | 0 | `generated.txt`: `"63 -72 -94 89 -30\n"` |
-| 44 | Чтение записанного fill | `python mathtools.py sort -m counting -i generated.txt` | `""` | — | `"-94 -72 -30 63 89\nМассив отсортирован.\n"` | `""` | 0 | — |
+| 44 | Чтение записанного fill | `python mathtools.py sort -m counting -i generated.txt` | `""` | — | `"-94 -72 -30 63 89\nМассив отсортирован.\n"` | `"Время операции sort (counting): <T> с\n"` | 0 | — |
 | 45 | Равные границы | `python mathtools.py fill -c 3 --min 5 --max 5` | `""` | — | `"5 5 5\n"` | `""` | 0 | — |
 | 46 | Ошибка параметров fill | `python mathtools.py fill -c -1` | `""` | — | `""` | `"ОШИБКА: количество элементов вне диапазона 1..1000000\n"` | 1 | — |
 | 47 | Ошибка параметров fill | `python mathtools.py fill -c 1000001` | `""` | — | `""` | `"ОШИБКА: количество элементов вне диапазона 1..1000000\n"` | 1 | — |
@@ -214,8 +218,8 @@ EOF: Ctrl+D в Unix/macOS (на пустой строке), Ctrl+Z и Enter в W
 | 50 | Ошибка параметров fill | `python mathtools.py fill -c 2 --max 101` | `""` | — | `""` | `"ОШИБКА: max вне диапазона -100..100\n"` | 1 | — |
 | 51 | Ошибка параметров fill | `python mathtools.py fill -c 2 --max -101` | `""` | — | `""` | `"ОШИБКА: max вне диапазона -100..100\n"` | 1 | — |
 | 52 | Ошибка параметров fill | `python mathtools.py fill -c 2 --min 10 --max 5` | `""` | — | `""` | `"ОШИБКА: min не должен превышать max\n"` | 1 | — |
-| 53 | Запятые, табуляция и пробельная строка | `python mathtools.py sort -m bubble` | `"3,\t-2\n0\n \t\n\n"` | пустая строка | `"-2 0 3\nМассив отсортирован.\n"` | `""` | 0 | — |
-| 54 | Ввод до EOF | `python mathtools.py sort -m insertion` | `"3 -2 0"` | EOF | `"-2 0 3\nМассив отсортирован.\n"` | `""` | 0 | — |
+| 53 | Запятые, табуляция и пробельная строка | `python mathtools.py sort -m bubble` | `"3,\t-2\n0\n \t\n\n"` | пустая строка | `"-2 0 3\nМассив отсортирован.\n"` | `"Время операции sort (bubble): <T> с\n"` | 0 | — |
+| 54 | Ввод до EOF | `python mathtools.py sort -m insertion` | `"3 -2 0"` | EOF | `"-2 0 3\nМассив отсортирован.\n"` | `"Время операции sort (insertion): <T> с\n"` | 0 | — |
 | 55 | Поиск с клавиатуры | `python mathtools.py search -v 0` | `"-100, 0, 100\n\n"` | пустая строка | `"Значение 0 имеет элемент с индексом 2.\n"` | `""` | 0 | — |
 | 56 | Первый элемент | `python mathtools.py search -v -76 -i example_sorted.txt` | `""` | — | `"Значение -76 имеет элемент с индексом 1.\n"` | `""` | 0 | — |
 | 57 | Последний элемент | `python mathtools.py search -v 81 -i example_sorted.txt` | `""` | — | `"Значение 81 имеет элемент с индексом 5.\n"` | `""` | 0 | — |
@@ -229,9 +233,82 @@ EOF: Ctrl+D в Unix/macOS (на пустой строке), Ctrl+Z и Enter в W
 | 65 | Ошибка данных массива | `python mathtools.py sort -m counting` | `"-101\n\n"` | пустая строка | `""` | `"ОШИБКА: значения должны быть от -100 до 100\n"` | 1 | — |
 | 66 | Ошибка чтения или записи (macOS/Linux) | `python mathtools.py sort -m bubble -i missing-array.txt` | `""` | — | `""` | `"ОШИБКА: [Errno 2] No such file or directory: 'missing-array.txt'\n"` | 1 | — |
 | 67 | Ошибка чтения или записи (macOS/Linux) | `python mathtools.py search -v 1 -i missing-array.txt` | `""` | — | `""` | `"ОШИБКА: [Errno 2] No such file or directory: 'missing-array.txt'\n"` | 1 | — |
-| 68 | Ошибка чтения или записи (macOS/Linux) | `python mathtools.py sort -m bubble -i example.txt -o .` | `""` | — | `""` | `"ОШИБКА: [Errno 21] Is a directory: '.'\n"` | 1 | — |
+| 68 | Ошибка чтения или записи (macOS/Linux) | `python mathtools.py sort -m bubble -i example.txt -o .` | `""` | — | `""` | `"Время операции sort (bubble): <T> с\nОШИБКА: [Errno 21] Is a directory: '.'\n"` | 1 | — |
 | 69 | Ошибка чтения или записи (macOS/Linux) | `python mathtools.py fill -c 5 --seed 42 -o .` | `""` | — | `""` | `"ОШИБКА: [Errno 21] Is a directory: '.'\n"` | 1 | — |
 | 70 | Ошибка argparse | `python mathtools.py fill -c abc` | `""` | — | `""` | `"usage: mathtools.py fill [-h] -c COUNT [--min MIN] [--max MAX] [--seed SEED]\n                         [-o FILE]\nmathtools.py fill: error: argument -c/--count: invalid int value: 'abc'\n"` | 2 | — |
 | 71 | Ошибка argparse | `python mathtools.py fill -c 1 --seed abc` | `""` | — | `""` | `"usage: mathtools.py fill [-h] -c COUNT [--min MIN] [--max MAX] [--seed SEED]\n                         [-o FILE]\nmathtools.py fill: error: argument --seed: invalid int value: 'abc'\n"` | 2 | — |
 | 72 | Ошибка argparse | `python mathtools.py sort -m unknown -i example.txt` | `""` | — | `""` | `"usage: mathtools.py sort [-h] -m {bubble,selection,insertion,counting}\n                         [--order {asc,desc}] [-i FILE] [-o FILE]\nmathtools.py sort: error: argument -m/--method: invalid choice: 'unknown' (choose from 'bubble', 'selection', 'insertion', 'counting')\n"` | 2 | — |
 | 73 | Ошибка argparse | `python mathtools.py search -v abc` | `""` | — | `""` | `"usage: mathtools.py search [-h] -v VALUE [-i FILE]\nmathtools.py search: error: argument -v/--value: invalid int value: 'abc'\n"` | 2 | — |
+
+
+Измерение времени сортировок — часть 5
+Дата: 19.11.2026. Python 3.15.2, Darwin arm64.
+Замеры выполнены обычными запусками Python из терминала, без отладчика.
+Измеряется только расчётная функция; чтение, проверка входа, запись и вывод
+не входят в измерение. Все времена ниже указаны в секундах.
+Каждый запуск заново читает неизменный исходный файл; результаты записываются
+в отдельный файл для каждого метода (повторные запуски перезаписывают его).
+Каталог benchmarks содержит три исходных файла и двенадцать результатов.
+
+| Размер | Создание исходного файла |
+| --- | --- |
+| 1000 | `python mathtools.py fill -c 1000 --seed 1 -o benchmarks/input_1000.txt` |
+| 3000 | `python mathtools.py fill -c 3000 --seed 1 -o benchmarks/input_3000.txt` |
+| 10000 | `python mathtools.py fill -c 10000 --seed 1 -o benchmarks/input_10000.txt` |
+
+Каждую команду следующей таблицы выполнить три раза:
+
+| Размер | Метод | Команда |
+| --- | --- | --- |
+| 1000 | bubble | `python mathtools.py sort -m bubble -i benchmarks/input_1000.txt --order asc -o benchmarks/sorted_1000_bubble.txt` |
+| 1000 | selection | `python mathtools.py sort -m selection -i benchmarks/input_1000.txt --order asc -o benchmarks/sorted_1000_selection.txt` |
+| 1000 | insertion | `python mathtools.py sort -m insertion -i benchmarks/input_1000.txt --order asc -o benchmarks/sorted_1000_insertion.txt` |
+| 1000 | counting | `python mathtools.py sort -m counting -i benchmarks/input_1000.txt --order asc -o benchmarks/sorted_1000_counting.txt` |
+| 3000 | bubble | `python mathtools.py sort -m bubble -i benchmarks/input_3000.txt --order asc -o benchmarks/sorted_3000_bubble.txt` |
+| 3000 | selection | `python mathtools.py sort -m selection -i benchmarks/input_3000.txt --order asc -o benchmarks/sorted_3000_selection.txt` |
+| 3000 | insertion | `python mathtools.py sort -m insertion -i benchmarks/input_3000.txt --order asc -o benchmarks/sorted_3000_insertion.txt` |
+| 3000 | counting | `python mathtools.py sort -m counting -i benchmarks/input_3000.txt --order asc -o benchmarks/sorted_3000_counting.txt` |
+| 10000 | bubble | `python mathtools.py sort -m bubble -i benchmarks/input_10000.txt --order asc -o benchmarks/sorted_10000_bubble.txt` |
+| 10000 | selection | `python mathtools.py sort -m selection -i benchmarks/input_10000.txt --order asc -o benchmarks/sorted_10000_selection.txt` |
+| 10000 | insertion | `python mathtools.py sort -m insertion -i benchmarks/input_10000.txt --order asc -o benchmarks/sorted_10000_insertion.txt` |
+| 10000 | counting | `python mathtools.py sort -m counting -i benchmarks/input_10000.txt --order asc -o benchmarks/sorted_10000_counting.txt` |
+
+stdout каждого запуска:
+Записано элементов: <N> в файл benchmarks/sorted_<N>_<method>.txt
+Массив отсортирован.
+stderr: Время операции sort (<method>): <T> с
+Код завершения: 0.
+<N>, <method> и <T> заменить размером, методом и фактическим временем.
+
+Сравнение результатов: при каждом из 36 запусков проверено содержимое файла
+по эталону, построенному из исходного списка. Для каждого размера все четыре
+файла результатов побайтно совпадают. Исходные файлы не изменялись.
+
+| Количество элементов | Метод | Замер 1, с | Замер 2, с | Замер 3, с | Среднее, с |
+| --- | --- | --- | --- | --- | --- |
+| 1000 | bubble | 0.036664 | 0.036683 | 0.036410 | 0.036586 |
+| 1000 | selection | 0.023347 | 0.023368 | 0.023213 | 0.023309 |
+| 1000 | insertion | 0.015823 | 0.015825 | 0.015629 | 0.015759 |
+| 1000 | counting | 0.000094 | 0.000104 | 0.000091 | 0.000096 |
+| 3000 | bubble | 0.357574 | 0.356397 | 0.356246 | 0.356739 |
+| 3000 | selection | 0.233823 | 0.232081 | 0.232999 | 0.232968 |
+| 3000 | insertion | 0.164856 | 0.165732 | 0.165003 | 0.165197 |
+| 3000 | counting | 0.000239 | 0.000246 | 0.000244 | 0.000243 |
+| 10000 | bubble | 4.177711 | 4.213711 | 4.188556 | 4.193326 |
+| 10000 | selection | 2.632378 | 2.631887 | 2.610773 | 2.625013 |
+| 10000 | insertion | 1.909452 | 1.911555 | 1.921461 | 1.914156 |
+| 10000 | counting | 0.000760 | 0.000768 | 0.000822 | 0.000783 |
+
+На всех трёх размерах быстрее counting: диапазон фиксирован (201 значение),
+поэтому сложность O(n + 201). У bubble, selection и insertion — O(n²)
+на случайных данных; при увеличении списка их время растёт значительно быстрее.
+Среднее время bubble при переходе от 1000 к 10000 элементам выросло
+примерно в 114.6 раза.
+Среднее время selection при переходе от 1000 к 10000 элементам выросло
+примерно в 112.6 раза.
+Среднее время insertion при переходе от 1000 к 10000 элементам выросло
+примерно в 121.5 раза.
+Среднее время counting при переходе от 1000 к 10000 элементам выросло
+примерно в 8.1 раза.
+Это фактические замеры на данном компьютере; небольшие колебания времени
+обусловлены нагрузкой системы, а не изменением исходных данных.

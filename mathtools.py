@@ -1,10 +1,21 @@
 import sys
+import time
 from math import isfinite
 
 from cli import build_parser
 from calc import equation, sorting, stats, series, integration, arrays
 
 # ------ HELPERS ------
+
+def measure(name, operation, parameters):
+    """Измерить расчётную операцию, вывести время в stderr и вернуть результат."""
+    start = time.perf_counter()
+    result = operation(*parameters)
+    elapsed = time.perf_counter() - start
+    print(f"Время операции {name}: {elapsed:.6f} с", file=sys.stderr)
+    return result
+
+
 
 def parse_int(text):
     """Преобразовать text в целый коэффициент или вызвать ValueError."""
@@ -171,7 +182,7 @@ def handle_sort(args):
     array = arrays.read_array(args.input)
     method = sorting.METHODS[args.method]
     descending = args.order == "desc"
-    method(array, descending)
+    measure(f"sort ({args.method})", method, [array, descending])
 
     arrays.write_array(array, args.output)
     if args.output:
