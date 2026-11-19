@@ -149,7 +149,20 @@ def handle_integrate(args):
     return 0
 
 def handle_fill(args):
-    return 1
+    """Заполнить массив рандомными числами"""
+
+    if args.min < arrays.MIN_VALUE:
+        raise ValueError("Минимальная граница меньше чем ограничение")
+
+    if args.max > arrays.MAX_VALUE:
+        raise ValueError("Максимальная граница превышает ограничение")
+
+    result = arrays.fill(args.count, args.min, args.max, args.seed)
+
+    print(result)
+    arrays.write_array(result, args.output)
+
+    return 0
 
 
 def handle_sort(args):

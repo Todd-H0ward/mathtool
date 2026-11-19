@@ -1,4 +1,4 @@
-import sys
+import sys, random
 
 # ------ CONSTANTS -------
 
@@ -48,3 +48,12 @@ def write_array(numbers, path):
             file.write(text + "\n")
     else:
         print(text)
+
+def fill(count, low = MIN_VALUE, high = MAX_VALUE, seed = ""):
+    random.seed(seed)
+    list = []
+
+    for _ in range(count):
+        list.append(random.randint(low, high))
+
+    return list

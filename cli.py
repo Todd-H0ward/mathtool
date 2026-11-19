@@ -83,7 +83,7 @@ def build_parser():
         allow_abbrev=False
     )
     p_fill.add_argument("-c", "--count", required=True,
-                        type=int, metavar="N",
+                        type=int, metavar="COUNT",
                         help=f"количество элементов (от 1 до {MAX_ARRAY_COUNT})")
     p_fill.add_argument("--min", type=int,
                         default=MIN_ARRAY_VALUE, metavar="MIN",
