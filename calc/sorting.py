@@ -1,3 +1,5 @@
+from .arrays import MIN_VALUE, MAX_VALUE
+
 # ------ HELPERS --------
 
 def not_in_order(a, b, descending):
@@ -49,10 +51,27 @@ def insertion_sort(array, descending=False):
         array[j] = current
 
 
+def counting_sort(array, descending=False):
+    """Отсортировать список на месте подсчётом; вернуть None."""
+    counts = [0] * (MAX_VALUE - MIN_VALUE + 1)
+    for value in array:
+        counts[value - MIN_VALUE] += 1
+
+    k = 0
+    indices = range(len(counts))
+    if descending:
+        indices = reversed(indices)
+    for index in indices:
+        for _ in range(counts[index]):
+            array[k] = index + MIN_VALUE
+            k += 1
+
+
 # ------ METHODS --------
 
 METHODS = {
     "bubble": bubble_sort,
     "selection": selection_sort,
     "insertion": insertion_sort,
+    "counting": counting_sort,
 }   
